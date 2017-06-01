@@ -3491,7 +3491,7 @@ var Gitment = function () {
           repo = this.repo;
 
       return _utils.http.get('/repos/' + owner + '/' + repo + '/issues', {
-        creator: 'lihuiba',
+        creator: owner,
         labels: id
       }).then(function (issues) {
         if (!issues.length) return Promise.reject(_constants.NOT_INITIALIZED_ERROR);
@@ -3708,4 +3708,5 @@ var spinner = exports.spinner = '<svg class="gitment-spinner-icon" xmlns="http:/
 /***/ })
 /******/ ]);
 //# sourceMappingURL=gitment.browser.js.map
+
 </=></=></unnamed></not></unnamed></unnamed>
