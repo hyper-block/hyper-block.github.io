@@ -19,7 +19,7 @@
 <meta property="og:site_name" content="Hyper Block">
 <meta property="og:description" content="Containers are becoming increasingly important in the era of cloud.  More and more customers are interested in or already using containers,  to ship and run their applications. One of the key advantag">
 <meta property="og:image" content="http://www.hyperblock.org/images/driver-pros-cons.png">
-<meta property="og:updated_time" content="2017-06-01T07:12:59.000Z">
+<meta property="og:updated_time" content="2017-06-01T11:18:00.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Torwards Hardened Container Images">
 <meta name="twitter:description" content="Containers are becoming increasingly important in the era of cloud.  More and more customers are interested in or already using containers,  to ship and run their applications. One of the key advantag">
@@ -176,8 +176,8 @@ volumes, as well as applying the patch to existing LVM thin volumes.</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">HYPERLAYER/1.0</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line"></div><div class="line">&lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">&lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">&lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">...</div></pre></td></tr></table></figure>
 <p>In which:</p>
 <ol>
-<li>keys and values are properties of the patch, consists of letters (lower or 
-upper), digits and underscore, but digits can’t be leading characters;</li>
+<li>keys and values are properties of the patch, consisting of letters (lower or 
+upper), digits and underscore, but no leading digits;</li>
 <li>offset and length are hex numbers with NO ‘0x’ prefix, in unit of sector (512 bytes);</li>
 <li>offsets are NOT required to be sorted;</li>
 <li>new lines is a single ‘\n’, without ‘\r’;</li>
