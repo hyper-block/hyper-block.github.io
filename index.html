@@ -6,7 +6,7 @@
   <title>Hyper Block</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
-    <meta name="keywords" content="container, storage, block, qcow2, lvm" />
+    <meta name="keywords" content="container, hypervisor, vm, virtual machine, storage, block, qcow2, lvm, hyperblock, hyperlayer" />
   
   
   
@@ -95,6 +95,14 @@ var themeMenus = {};
 </header>
 
 
+  <div style="background: #fff; width: 100%;">
+
+      <div style="max-height:600px; overflow: hidden;  display: flex; display: -webkit-flex; align-items: center;">
+        <img width="100%" alt="Hike News" src="/css/images/pose.jpg">
+      </div>
+
+  </div>
+
 
 
   <div id="container">
@@ -104,7 +112,7 @@ var themeMenus = {};
         
           <section id="main">
   
-    <article id="post-towards"  class="article article-type-post" itemscope itemprop="blogPost" >
+    <article id="post-lightened"  class="article article-type-post" itemscope itemprop="blogPost" >
   <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
     
     
@@ -112,7 +120,7 @@ var themeMenus = {};
         
   
     <h1 class="thumb" itemprop="name">
-      <a class="article-title" href="/2017/05/25/towards/">Torwards Hardened Container Images</a>
+      <a class="article-title" href="/2017/05/31/lightened/">Towards lightened VM Images</a>
     </h1>
   
 
@@ -120,7 +128,101 @@ var themeMenus = {};
     
     <div class="article-meta">
       
-	Posted on <a href="/2017/05/25/towards/" class="article-date">
+	Posted on <a href="/2017/05/31/lightened/" class="article-date">
+	  <time datetime="2017-05-30T16:00:00.000Z" itemprop="datePublished">May 31, 2017</time>
+	</a>
+
+      
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>I have been working on cloud for a couple of years, and from time
+to time I see difficulties with large VM images. Last week, a cusomter
+gave us a ticket saying they had a problem when creating a new image.
+After inspection, I found that the creating process was still going
+on, as the image was so big (about 500GB) that the process was not
+able to get completed within a preset time-out period (one hour).</p>
+<p>The root cause of this incident is the heavy weight image. The size of
+a VM image is usually several GBs at least, and can grow to 10s of GBs
+easily, and it’s not uncommon to see 100s of GBs. Such big size is a
+major obstacle to transferring and operating VM images.</p>
+<p>On the other hand, container images are much more light-weight. Each
+time, only needed incremental layers are transferred, which can be as
+small as a few MB. This is the key advantage of docker —- agility.</p>
+<p>Actually, VM can learn from the image system of docker. Layering is 
+actually a subset of a long-established feature —- snapshot. Each
+snapshot stores the differential data blocks compared with its parent
+snapshot —- roughly the same model with the layering model of 
+container image. The major distinction is block-level vs file-level,
+which is only an implementaion detail.</p>
+<p>The most important missing part of block-level snapshot is a set of tools 
+to export and import layers (snapshots). There was little need for
+this kind of tools, until container appears. We have developed these
+tools for qcow2 images, as well as LVM.</p>
+<p>The figure below shows the model for QCoW2 images: 
+(1) we suppose backing file plays the role of image, which serves all 
+    the dependent layers as read-only; 
+(2) and the “fronting” file plays the role of staging layer as read-write; 
+(3) every layer is essentially a snapshot.</p>
+<p><img src="/images/layered-image.png" alt="Storage Drivers"></p>
+<p>The two files (“fronting” and backing) in this model can not be 
+integrated into one, otherwise the image layers can not be shared by 
+multiple “fronting” files.</p>
+<p>The layers are exported as HYPERLAYER format:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">HYPERLAYER/1.0</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line"></div><div class="line">&lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">&lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">&lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">...</div></pre></td></tr></table></figure>
+<p>In which:</p>
+<ol>
+<li>keys and values are properties of the patch, consists of letters (lower or 
+upper), digits and underscore, but digits can’t be leading characters;</li>
+<li>offset and length are hex numbers with NO ‘0x’ prefix, in unit of sector (512 bytes);</li>
+<li>offsets are NOT required to be sorted;</li>
+<li>new lines is a single ‘\n’, without ‘\r’;</li>
+</ol>
+<p>For example:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">HYPERLAYER/1.0</div><div class="line">Parent: 68044d4a72dfcf15018cfa6b4baf89361913d93d</div><div class="line">Author: Huiba Li &lt;lihuiba@gmail.com&gt;</div><div class="line">Date: Thu May 4 15:34:37 2017 +0800 </div><div class="line"></div><div class="line">0 8</div><div class="line">&lt;data of 4096 bytes&gt;</div><div class="line">800 80</div><div class="line">&lt;data of 65536 bytes&gt;</div><div class="line">...</div></pre></td></tr></table></figure>
+<p>This format is called <em>HyperLayer</em>. It‘s meant to be a generic diff/patch format 
+for all block-level storage systems, including but not limited to LVM and/or QCoW2. 
+With this kind of patch file, we are able to realize a block-level image system 
+that is similar to docker’s.</p>
+
+      
+    </div>
+    <footer class="entry-meta entry-footer">
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/VM/">VM</a>
+
+      
+  <span class="ico-tags"></span>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hyperlayer/">hyperlayer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hypervisor/">hypervisor</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/image/">image</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/qcow2/">qcow2</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/qemu/">qemu</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/vmm/">vmm</a></li></ul>
+
+      
+    </footer>
+  </div>
+  
+</article>
+
+<!-- Table of Contents -->
+
+
+  
+    <article id="post-hardened"  class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" itemprop="name">
+      <a class="article-title" href="/2017/05/25/hardened/">Torwards Hardened Container Images</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	Posted on <a href="/2017/05/25/hardened/" class="article-date">
 	  <time datetime="2017-05-24T16:00:00.000Z" itemprop="datePublished">May 25, 2017</time>
 	</a>
 
@@ -189,6 +291,9 @@ that is similar to docker’s.</p>
     <footer class="entry-meta entry-footer">
       
       
+  <span class="ico-tags"></span>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/block/">block</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/container/">container</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/">docker</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hyperlayer/">hyperlayer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/image/">image</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/lvm/">lvm</a></li></ul>
+
       
     </footer>
   </div>
@@ -268,56 +373,13 @@ LVM和QCoW2。基于这种patch文件，我们可以实现跟docker类似的基�
     </div>
     <footer class="entry-meta entry-footer">
       
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-<!-- Table of Contents -->
-
-
-  
-    <article id="post-hello-world"  class="article article-type-post" itemscope itemprop="blogPost" >
-  <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="thumb" itemprop="name">
-      <a class="article-title" href="/2017/05/02/hello-world/">Hello World</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-meta">
-      
-	Posted on <a href="/2017/05/02/hello-world/" class="article-date">
-	  <time datetime="2017-05-02T12:51:45.000Z" itemprop="datePublished">May 2, 2017</time>
-	</a>
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Container/">Container</a>
 
       
-    </div>
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+  <span class="ico-tags"></span>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/block/">block</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/container/">container</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/">docker</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hyperlayer/">hyperlayer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/image/">image</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/lvm/">lvm</a></li></ul>
 
-      
-    </div>
-    <footer class="entry-meta entry-footer">
-      
-      
       
     </footer>
   </div>
@@ -439,7 +501,19 @@ LVM和QCoW2。基于这种patch文件，我们可以实现跟docker类似的基�
               <div class="widget-entry-summary" style="margin: 0;">
             
 
-              <h6 style="margin: 0;"><a href="/2017/05/25/towards/">Torwards Hardened Container Images</a></h6>
+              <h6 style="margin: 0;"><a href="/2017/05/31/lightened/">Towards lightened VM Images</a></h6>
+              <span>May 31, 2017</span>
+            </div>
+
+          </li>
+        
+          <li class="clearfix">
+
+            
+              <div class="widget-entry-summary" style="margin: 0;">
+            
+
+              <h6 style="margin: 0;"><a href="/2017/05/25/hardened/">Torwards Hardened Container Images</a></h6>
               <span>May 25, 2017</span>
             </div>
 
@@ -457,30 +531,29 @@ LVM和QCoW2。基于这种patch文件，我们可以实现跟docker类似的基�
 
           </li>
         
-          <li class="clearfix">
-
-            
-              <div class="widget-entry-summary" style="margin: 0;">
-            
-
-              <h6 style="margin: 0;"><a href="/2017/05/02/hello-world/">Hello World</a></h6>
-              <span>May 2, 2017</span>
-            </div>
-
-          </li>
-        
       </ul>
     </div>
   </div>
 
   
     
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Container/">Container</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/VM/">VM</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
 
   
     
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/block/" style="font-size: 15px;">block</a> <a href="/tags/container/" style="font-size: 15px;">container</a> <a href="/tags/docker/" style="font-size: 15px;">docker</a> <a href="/tags/hyperlayer/" style="font-size: 20px;">hyperlayer</a> <a href="/tags/hypervisor/" style="font-size: 10px;">hypervisor</a> <a href="/tags/image/" style="font-size: 20px;">image</a> <a href="/tags/lvm/" style="font-size: 15px;">lvm</a> <a href="/tags/qcow2/" style="font-size: 10px;">qcow2</a> <a href="/tags/qemu/" style="font-size: 10px;">qemu</a> <a href="/tags/vmm/" style="font-size: 10px;">vmm</a>
+    </div>
+  </div>
 
-  
-    
   
 </aside>
         

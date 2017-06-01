@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   
-  <title>加固容器映像 | Hyper Block</title>
+  <title>towards lightened vm images | Hyper Block</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
     <meta name="keywords" content="container, hypervisor, vm, virtual machine, storage, block, qcow2, lvm, hyperblock, hyperlayer" />
@@ -11,19 +11,19 @@
   
   
   
-  <meta name="description" content="容器在这个云计算时代变得愈发重要，越来越多的客户对容器产生了兴趣，甚至已经开始使用容器 来分发、部署和运行应用程序。 容器的一个关键优势是其分层映像系统，它利用了aufs、btrfs、overlayfs、zfs、lvm以及 device mapper等存储技术的先进特性。下图是从docker官方网站摘录出来的，它展示了docker 对于各种不同的工作负载提供了许多存储driver选项。然而遗憾的是">
-<meta name="keywords" content="container,docker,image,block,lvm,hyperlayer">
+  <meta name="description" content="I have been working on cloud for a couple of years, and from time to time I see difficulties with large VM images. Last week, a cusomter gave us a ticket saying they had a problem when creating a new">
+<meta name="keywords" content="image,hyperlayer,hypervisor,vmm,qemu,qcow2">
 <meta property="og:type" content="article">
-<meta property="og:title" content="加固容器映像">
-<meta property="og:url" content="http://www.hyperblock.org/2017/05/25/加固容器映像/index.html">
+<meta property="og:title" content="Towards lightened VM Images">
+<meta property="og:url" content="http://www.hyperblock.org/2017/05/31/lightened/index.html">
 <meta property="og:site_name" content="Hyper Block">
-<meta property="og:description" content="容器在这个云计算时代变得愈发重要，越来越多的客户对容器产生了兴趣，甚至已经开始使用容器 来分发、部署和运行应用程序。 容器的一个关键优势是其分层映像系统，它利用了aufs、btrfs、overlayfs、zfs、lvm以及 device mapper等存储技术的先进特性。下图是从docker官方网站摘录出来的，它展示了docker 对于各种不同的工作负载提供了许多存储driver选项。然而遗憾的是">
-<meta property="og:image" content="http://www.hyperblock.org/images/driver-pros-cons.png">
-<meta property="og:updated_time" content="2017-06-01T07:12:34.000Z">
+<meta property="og:description" content="I have been working on cloud for a couple of years, and from time to time I see difficulties with large VM images. Last week, a cusomter gave us a ticket saying they had a problem when creating a new">
+<meta property="og:image" content="http://www.hyperblock.org/images/layered-image.png">
+<meta property="og:updated_time" content="2017-06-01T07:12:26.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="加固容器映像">
-<meta name="twitter:description" content="容器在这个云计算时代变得愈发重要，越来越多的客户对容器产生了兴趣，甚至已经开始使用容器 来分发、部署和运行应用程序。 容器的一个关键优势是其分层映像系统，它利用了aufs、btrfs、overlayfs、zfs、lvm以及 device mapper等存储技术的先进特性。下图是从docker官方网站摘录出来的，它展示了docker 对于各种不同的工作负载提供了许多存储driver选项。然而遗憾的是">
-<meta name="twitter:image" content="http://www.hyperblock.org/images/driver-pros-cons.png">
+<meta name="twitter:title" content="Towards lightened VM Images">
+<meta name="twitter:description" content="I have been working on cloud for a couple of years, and from time to time I see difficulties with large VM images. Last week, a cusomter gave us a ticket saying they had a problem when creating a new">
+<meta name="twitter:image" content="http://www.hyperblock.org/images/layered-image.png">
   
     <link rel="alternate" href="/atom.xml" title="Hyper Block" type="application/atom+xml">
   
@@ -117,7 +117,7 @@ var themeMenus = {};
             
       <div id="content" class="outer">
         
-          <section id="main" style="float:none;"><article id="post-加固容器映像" style="width: 66%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+          <section id="main" style="float:none;"><article id="post-lightened" style="width: 66%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
   <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
     
     
@@ -125,7 +125,7 @@ var themeMenus = {};
         
   
     <h1 class="thumb" class="article-title" itemprop="name">
-      加固容器映像
+      Towards lightened VM Images
     </h1>
   
 
@@ -133,65 +133,73 @@ var themeMenus = {};
     
     <div class="article-meta">
       
-	Posted on <a href="/2017/05/25/加固容器映像/" class="article-date">
-	  <time datetime="2017-05-24T16:00:00.000Z" itemprop="datePublished">May 25, 2017</time>
+	Posted on <a href="/2017/05/31/lightened/" class="article-date">
+	  <time datetime="2017-05-30T16:00:00.000Z" itemprop="datePublished">May 31, 2017</time>
 	</a>
 
       
     </div>
     <div class="article-entry" itemprop="articleBody">
       
-        <p>容器在这个云计算时代变得愈发重要，越来越多的客户对容器产生了兴趣，甚至已经开始使用容器
-来分发、部署和运行应用程序。</p>
-<p>容器的一个关键优势是其分层映像系统，它利用了aufs、btrfs、overlayfs、zfs、lvm以及
-device mapper等存储技术的先进特性。下图是从docker官方网站摘录出来的，它展示了docker
-对于各种不同的工作负载提供了许多存储driver选项。然而遗憾的是，它们当中只有lvm这一个选择
-同时满足production-ready和进入Linux内核这两项标准。事实上，lvm是官方唯一建议用于
-RHEL/CentOS生产环境的存储driver。RHEL/CentOS系列操作系统是生产服务器中最为广泛
-使用的Linux发行版，尤其是在大型企业里。</p>
-<p><img src="/images/driver-pros-cons.png" alt="Storage Drivers"></p>
-<p>LVM是一种块存储技术，然而docker的分层映像系统是基于文件系统技术设计的，所以他们之间
-存在一道语义鸿沟：映像中的每一层都是由被修改的文件以及文件元数据组成，而LVM中的每一层
-（快照）是由被修改的数据块组成。为了抹平这一鸿沟，lvm存储驱动需要遍历并对比相邻层次中
-的所有文件，并判断每个文件是否修改或新增。这一过程由docker中的<code>NaiveDiffDriver</code>类完成。</p>
-<p>除此之外，这一设计选择还有一些其他的基础性问题：</p>
-<ol>
-<li>文件系统层的功能特性通常实现起来都非常复杂，这就是为什么时至今日所有文件系统层的
-driver都还不适用于生产环境；</li>
-<li>一些文件系统层面的高级功能无法在现有设计里得到支持，例如扩展属性xattr，因此SELinux
-也无法使用；</li>
-<li>应用无法自主选择文件系统类型，即便某种特定的文件系统能使应用显著受益；</li>
-<li>当映像层数增加，文件系统的元数据访问会越来越慢；</li>
-<li>对任何大文件的第一次修改都会有很长的延迟，用来做文件的写时复制（Copy-on-Write），
-这将导致I/O性能的显著波动。</li>
-</ol>
-<p>为了解决这些问题，我们提议一种新型的映像系统，基于块存储来设计，可以支持任何类型的文件系统，
-以及文件系统的完整功能集合，也可以保障持续、稳定的I/O性能。这一设计基于久经考验的LVM，同时
-我们也设计了一个新的工具<code>lvdiffer</code>，来创建或应用块层次的patch/diff文件。</p>
-<p>设计的patch文件具有简单且可序列化的格式，如下所示：</p>
+        <p>I have been working on cloud for a couple of years, and from time
+to time I see difficulties with large VM images. Last week, a cusomter
+gave us a ticket saying they had a problem when creating a new image.
+After inspection, I found that the creating process was still going
+on, as the image was so big (about 500GB) that the process was not
+able to get completed within a preset time-out period (one hour).</p>
+<p>The root cause of this incident is the heavy weight image. The size of
+a VM image is usually several GBs at least, and can grow to 10s of GBs
+easily, and it’s not uncommon to see 100s of GBs. Such big size is a
+major obstacle to transferring and operating VM images.</p>
+<p>On the other hand, container images are much more light-weight. Each
+time, only needed incremental layers are transferred, which can be as
+small as a few MB. This is the key advantage of docker —- agility.</p>
+<p>Actually, VM can learn from the image system of docker. Layering is 
+actually a subset of a long-established feature —- snapshot. Each
+snapshot stores the differential data blocks compared with its parent
+snapshot —- roughly the same model with the layering model of 
+container image. The major distinction is block-level vs file-level,
+which is only an implementaion detail.</p>
+<p>The most important missing part of block-level snapshot is a set of tools 
+to export and import layers (snapshots). There was little need for
+this kind of tools, until container appears. We have developed these
+tools for qcow2 images, as well as LVM.</p>
+<p>The figure below shows the model for QCoW2 images: 
+(1) we suppose backing file plays the role of image, which serves all 
+    the dependent layers as read-only; 
+(2) and the “fronting” file plays the role of staging layer as read-write; 
+(3) every layer is essentially a snapshot.</p>
+<p><img src="/images/layered-image.png" alt="Storage Drivers"></p>
+<p>The two files (“fronting” and backing) in this model can not be 
+integrated into one, otherwise the image layers can not be shared by 
+multiple “fronting” files.</p>
+<p>The layers are exported as HYPERLAYER format:</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">HYPERLAYER/1.0</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line"></div><div class="line">&lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">&lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">&lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">...</div></pre></td></tr></table></figure>
-<p>其中：</p>
+<p>In which:</p>
 <ol>
-<li>key和value是该patch文件的属性，由大小写字母、数字和下划线组成，并且首字符不能是数字；</li>
-<li>offset和length是16进制数字，没有’0x’前缀，以sector为单位（512字节）；</li>
-<li>offset不需要依照某种特定顺序排列；</li>
-<li>换行符是单个’\n’，没有’\r’；</li>
+<li>keys and values are properties of the patch, consists of letters (lower or 
+upper), digits and underscore, but digits can’t be leading characters;</li>
+<li>offset and length are hex numbers with NO ‘0x’ prefix, in unit of sector (512 bytes);</li>
+<li>offsets are NOT required to be sorted;</li>
+<li>new lines is a single ‘\n’, without ‘\r’;</li>
 </ol>
-<p>例如：</p>
+<p>For example:</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">HYPERLAYER/1.0</div><div class="line">Parent: 68044d4a72dfcf15018cfa6b4baf89361913d93d</div><div class="line">Author: Huiba Li &lt;lihuiba@gmail.com&gt;</div><div class="line">Date: Thu May 4 15:34:37 2017 +0800 </div><div class="line"></div><div class="line">0 8</div><div class="line">&lt;data of 4096 bytes&gt;</div><div class="line">800 80</div><div class="line">&lt;data of 65536 bytes&gt;</div><div class="line">...</div></pre></td></tr></table></figure>
-<p>这种格式叫做<em>HyperLayer</em>，它被设计为一种通用的块存储系统diff/patch格式，可用于（但不限于）
-LVM和QCoW2。基于这种patch文件，我们可以实现跟docker类似的基于块存储的映像系统。</p>
+<p>This format is called <em>HyperLayer</em>. It‘s meant to be a generic diff/patch format 
+for all block-level storage systems, including but not limited to LVM and/or QCoW2. 
+With this kind of patch file, we are able to realize a block-level image system 
+that is similar to docker’s.</p>
 
       
     </div>
     <footer class="entry-meta entry-footer">
       
 	<span class="ico-folder"></span>
-    <a class="article-category-link" href="/categories/Container/">Container</a>
+    <a class="article-category-link" href="/categories/VM/">VM</a>
 
       
   <span class="ico-tags"></span>
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/block/">block</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/container/">container</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/">docker</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hyperlayer/">hyperlayer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/image/">image</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/lvm/">lvm</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hyperlayer/">hyperlayer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hypervisor/">hypervisor</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/image/">image</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/qcow2/">qcow2</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/qemu/">qemu</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/vmm/">vmm</a></li></ul>
 
       
         
