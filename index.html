@@ -128,7 +128,7 @@ var themeMenus = {};
     </div>
     <div class="article-entry" itemprop="articleBody">
       
-        <p>I have been working on cloud for a couple of years, and from time
+        <h3 id="Heavy-Images"><a href="#Heavy-Images" class="headerlink" title="Heavy Images"></a>Heavy Images</h3><p>I have been working on cloud for a couple of years, and from time
 to time I see difficulties with large VM images. Last week, a cusomter
 gave us a ticket saying they had a problem when creating a new image.
 After inspection, I found that the creating process was still going
@@ -141,7 +141,7 @@ major obstacle to transferring and operating VM images.</p>
 <p>On the other hand, container images are much more light-weight. Each
 time, only needed incremental layers are transferred, which can be as
 small as a few MB. This is the key advantage of docker —- agility.</p>
-<p>Actually, VM can learn from the image system of docker. Layering is 
+<h3 id="Lightening-the-Images"><a href="#Lightening-the-Images" class="headerlink" title="Lightening the Images"></a>Lightening the Images</h3><p>Actually, VM can learn from the image system of docker. Layering is 
 actually a subset of a long-established feature —- snapshot. Each
 snapshot stores the differential data blocks compared with its parent
 snapshot —- roughly the same model with the layering model of 
@@ -160,7 +160,7 @@ tools for qcow2 images, as well as LVM.</p>
 <p>The two files (“fronting” and backing) in this model can not be 
 integrated into one, otherwise the image layers can not be shared by 
 multiple “fronting” files.</p>
-<p>The layers are exported as HYPERLAYER format:</p>
+<h3 id="Exported-Format-of-Layers"><a href="#Exported-Format-of-Layers" class="headerlink" title="Exported Format of Layers"></a>Exported Format of Layers</h3><p>The layers are exported as HYPERLAYER format:</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">HYPERLAYER/1.0</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line"></div><div class="line">&lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">&lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">&lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">...</div></pre></td></tr></table></figure>
 <p>In which:</p>
 <ol>
@@ -222,7 +222,7 @@ that is similar to docker’s.</p>
     </div>
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Containers are becoming increasingly important in the era of cloud. 
+        <h3 id="The-Image-System-of-Container"><a href="#The-Image-System-of-Container" class="headerlink" title="The Image System of Container"></a>The Image System of Container</h3><p>Containers are becoming increasingly important in the era of cloud. 
 More and more customers are interested in or already using containers, 
 to ship and run their applications.</p>
 <p>One of the key advantages of containers is the layered image system, 
@@ -254,7 +254,7 @@ that a specific type fits much better than any other ones; </li>
 <li>every first modification to large files has an extra long latency for 
 copy-on-write of the file, which leads to quite inconsistent I/O performance.</li>
 </ol>
-<p>To address these problems,
+<h3 id="A-Block-Level-Image-System"><a href="#A-Block-Level-Image-System" class="headerlink" title="A Block-Level Image System"></a>A Block-Level Image System</h3><p>To address these problems,
 we propose a new image system that is based on block-level storage system,
 which supports all kinds of file systems, as well as their complete feature 
 sets; and provides consistent I/O performance in all cases. It is 
@@ -323,7 +323,7 @@ that is similar to docker’s.</p>
     </div>
     <div class="article-entry" itemprop="articleBody">
       
-        <p>容器在这个云计算时代变得愈发重要，越来越多的客户对容器产生了兴趣，甚至已经开始使用容器
+        <h3 id="容器的映像系统"><a href="#容器的映像系统" class="headerlink" title="容器的映像系统"></a>容器的映像系统</h3><p>容器在这个云计算时代变得愈发重要，越来越多的客户对容器产生了兴趣，甚至已经开始使用容器
 来分发、部署和运行应用程序。</p>
 <p>容器的一个关键优势是其分层映像系统，它利用了aufs、btrfs、overlayfs、zfs、lvm以及
 device mapper等存储技术的先进特性。下图是从docker官方网站摘录出来的，它展示了docker
@@ -347,7 +347,7 @@ driver都还不适用于生产环境；</li>
 <li>对任何大文件的第一次修改都会有很长的延迟，用来做文件的写时复制（Copy-on-Write），
 这将导致I/O性能的显著波动。</li>
 </ol>
-<p>为了解决这些问题，我们提议一种新型的映像系统，基于块存储来设计，可以支持任何类型的文件系统，
+<h3 id="一种块级别的映像系统"><a href="#一种块级别的映像系统" class="headerlink" title="一种块级别的映像系统"></a>一种块级别的映像系统</h3><p>为了解决这些问题，我们提议一种新型的映像系统，基于块存储来设计，可以支持任何类型的文件系统，
 以及文件系统的完整功能集合，也可以保障持续、稳定的I/O性能。这一设计基于久经考验的LVM，同时
 我们也设计了一个新的工具<code>lvdiffer</code>，来创建或应用块层次的patch/diff文件。</p>
 <p>设计的patch文件具有简单且可序列化的格式，如下所示：</p>

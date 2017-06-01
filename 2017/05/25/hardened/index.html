@@ -11,18 +11,18 @@
   
   
   
-  <meta name="description" content="Containers are becoming increasingly important in the era of cloud.  More and more customers are interested in or already using containers,  to ship and run their applications. One of the key advantag">
+  <meta name="description" content="The Image System of ContainerContainers are becoming increasingly important in the era of cloud.  More and more customers are interested in or already using containers,  to ship and run their applicat">
 <meta name="keywords" content="container,docker,image,block,lvm,hyperlayer">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Torwards Hardened Container Images">
 <meta property="og:url" content="http://www.hyperblock.org/2017/05/25/hardened/index.html">
 <meta property="og:site_name" content="Hyper Block">
-<meta property="og:description" content="Containers are becoming increasingly important in the era of cloud.  More and more customers are interested in or already using containers,  to ship and run their applications. One of the key advantag">
+<meta property="og:description" content="The Image System of ContainerContainers are becoming increasingly important in the era of cloud.  More and more customers are interested in or already using containers,  to ship and run their applicat">
 <meta property="og:image" content="http://www.hyperblock.org/images/driver-pros-cons.png">
-<meta property="og:updated_time" content="2017-06-01T11:18:00.000Z">
+<meta property="og:updated_time" content="2017-06-01T11:32:52.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Torwards Hardened Container Images">
-<meta name="twitter:description" content="Containers are becoming increasingly important in the era of cloud.  More and more customers are interested in or already using containers,  to ship and run their applications. One of the key advantag">
+<meta name="twitter:description" content="The Image System of ContainerContainers are becoming increasingly important in the era of cloud.  More and more customers are interested in or already using containers,  to ship and run their applicat">
 <meta name="twitter:image" content="http://www.hyperblock.org/images/driver-pros-cons.png">
   
     <link rel="alternate" href="/atom.xml" title="Hyper Block" type="application/atom+xml">
@@ -133,7 +133,7 @@ var themeMenus = {};
     </div>
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Containers are becoming increasingly important in the era of cloud. 
+        <h3 id="The-Image-System-of-Container"><a href="#The-Image-System-of-Container" class="headerlink" title="The Image System of Container"></a>The Image System of Container</h3><p>Containers are becoming increasingly important in the era of cloud. 
 More and more customers are interested in or already using containers, 
 to ship and run their applications.</p>
 <p>One of the key advantages of containers is the layered image system, 
@@ -165,7 +165,7 @@ that a specific type fits much better than any other ones; </li>
 <li>every first modification to large files has an extra long latency for 
 copy-on-write of the file, which leads to quite inconsistent I/O performance.</li>
 </ol>
-<p>To address these problems,
+<h3 id="A-Block-Level-Image-System"><a href="#A-Block-Level-Image-System" class="headerlink" title="A Block-Level Image System"></a>A Block-Level Image System</h3><p>To address these problems,
 we propose a new image system that is based on block-level storage system,
 which supports all kinds of file systems, as well as their complete feature 
 sets; and provides consistent I/O performance in all cases. It is 
@@ -245,7 +245,7 @@ $(document).ready(function(){
     <div id="toc" class="toc-article">
     <strong class="toc-title">Contents</strong>
     
-      <ol class="nav">None</ol>
+      <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#The-Image-System-of-Container"><span class="nav-number">1.</span> <span class="nav-text">The Image System of Container</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#A-Block-Level-Image-System"><span class="nav-number">2.</span> <span class="nav-text">A Block-Level Image System</span></a></li></ol>
     
     </div>
   </aside>

@@ -11,18 +11,18 @@
   
   
   
-  <meta name="description" content="I have been working on cloud for a couple of years, and from time to time I see difficulties with large VM images. Last week, a cusomter gave us a ticket saying they had a problem when creating a new">
+  <meta name="description" content="Heavy ImagesI have been working on cloud for a couple of years, and from time to time I see difficulties with large VM images. Last week, a cusomter gave us a ticket saying they had a problem when cre">
 <meta name="keywords" content="image,hyperlayer,hypervisor,vmm,qemu,qcow2">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Towards lightened VM Images">
 <meta property="og:url" content="http://www.hyperblock.org/2017/05/31/lightened/index.html">
 <meta property="og:site_name" content="Hyper Block">
-<meta property="og:description" content="I have been working on cloud for a couple of years, and from time to time I see difficulties with large VM images. Last week, a cusomter gave us a ticket saying they had a problem when creating a new">
+<meta property="og:description" content="Heavy ImagesI have been working on cloud for a couple of years, and from time to time I see difficulties with large VM images. Last week, a cusomter gave us a ticket saying they had a problem when cre">
 <meta property="og:image" content="http://www.hyperblock.org/images/layered-image.png">
-<meta property="og:updated_time" content="2017-06-01T11:18:15.000Z">
+<meta property="og:updated_time" content="2017-06-01T11:29:58.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Towards lightened VM Images">
-<meta name="twitter:description" content="I have been working on cloud for a couple of years, and from time to time I see difficulties with large VM images. Last week, a cusomter gave us a ticket saying they had a problem when creating a new">
+<meta name="twitter:description" content="Heavy ImagesI have been working on cloud for a couple of years, and from time to time I see difficulties with large VM images. Last week, a cusomter gave us a ticket saying they had a problem when cre">
 <meta name="twitter:image" content="http://www.hyperblock.org/images/layered-image.png">
   
     <link rel="alternate" href="/atom.xml" title="Hyper Block" type="application/atom+xml">
@@ -133,7 +133,7 @@ var themeMenus = {};
     </div>
     <div class="article-entry" itemprop="articleBody">
       
-        <p>I have been working on cloud for a couple of years, and from time
+        <h3 id="Heavy-Images"><a href="#Heavy-Images" class="headerlink" title="Heavy Images"></a>Heavy Images</h3><p>I have been working on cloud for a couple of years, and from time
 to time I see difficulties with large VM images. Last week, a cusomter
 gave us a ticket saying they had a problem when creating a new image.
 After inspection, I found that the creating process was still going
@@ -146,7 +146,7 @@ major obstacle to transferring and operating VM images.</p>
 <p>On the other hand, container images are much more light-weight. Each
 time, only needed incremental layers are transferred, which can be as
 small as a few MB. This is the key advantage of docker —- agility.</p>
-<p>Actually, VM can learn from the image system of docker. Layering is 
+<h3 id="Lightening-the-Images"><a href="#Lightening-the-Images" class="headerlink" title="Lightening the Images"></a>Lightening the Images</h3><p>Actually, VM can learn from the image system of docker. Layering is 
 actually a subset of a long-established feature —- snapshot. Each
 snapshot stores the differential data blocks compared with its parent
 snapshot —- roughly the same model with the layering model of 
@@ -165,7 +165,7 @@ tools for qcow2 images, as well as LVM.</p>
 <p>The two files (“fronting” and backing) in this model can not be 
 integrated into one, otherwise the image layers can not be shared by 
 multiple “fronting” files.</p>
-<p>The layers are exported as HYPERLAYER format:</p>
+<h3 id="Exported-Format-of-Layers"><a href="#Exported-Format-of-Layers" class="headerlink" title="Exported Format of Layers"></a>Exported Format of Layers</h3><p>The layers are exported as HYPERLAYER format:</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">HYPERLAYER/1.0</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line"></div><div class="line">&lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">&lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">&lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">...</div></pre></td></tr></table></figure>
 <p>In which:</p>
 <ol>
@@ -238,7 +238,7 @@ $(document).ready(function(){
     <div id="toc" class="toc-article">
     <strong class="toc-title">Contents</strong>
     
-      <ol class="nav">None</ol>
+      <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Heavy-Images"><span class="nav-number">1.</span> <span class="nav-text">Heavy Images</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lightening-the-Images"><span class="nav-number">2.</span> <span class="nav-text">Lightening the Images</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Exported-Format-of-Layers"><span class="nav-number">3.</span> <span class="nav-text">Exported Format of Layers</span></a></li></ol>
     
     </div>
   </aside>
