@@ -64,17 +64,17 @@ that is similar to docker’s.</p>
         
         <tags>
             
-            <tag> image </tag>
-            
-            <tag> hyperlayer </tag>
-            
             <tag> hypervisor </tag>
             
             <tag> vmm </tag>
             
+            <tag> image </tag>
+            
             <tag> qemu </tag>
             
             <tag> qcow2 </tag>
+            
+            <tag> hyperlayer </tag>
             
         </tags>
         
@@ -149,17 +149,17 @@ that is similar to docker’s.</p>
         
         <tags>
             
+            <tag> image </tag>
+            
+            <tag> hyperlayer </tag>
+            
             <tag> container </tag>
             
             <tag> docker </tag>
             
-            <tag> image </tag>
-            
             <tag> block </tag>
             
             <tag> lvm </tag>
-            
-            <tag> hyperlayer </tag>
             
         </tags>
         
@@ -219,17 +219,17 @@ LVM和QCoW2。基于这种patch文件，我们可以实现跟docker类似的基�
         
         <tags>
             
+            <tag> image </tag>
+            
+            <tag> hyperlayer </tag>
+            
             <tag> container </tag>
             
             <tag> docker </tag>
             
-            <tag> image </tag>
-            
             <tag> block </tag>
             
             <tag> lvm </tag>
-            
-            <tag> hyperlayer </tag>
             
         </tags>
         
