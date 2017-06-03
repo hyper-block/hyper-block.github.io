@@ -149,6 +149,8 @@ that is similar to docker’s.</p>
             
             <category> image </category>
             
+            <category> English </category>
+            
         </categories>
         
         
@@ -217,6 +219,8 @@ LVM和QCoW2。基于这种patch文件，我们可以实现跟docker类似的基�
         <categories>
             
             <category> image </category>
+            
+            <category> 中文 </category>
             
         </categories>
         
