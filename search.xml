@@ -5,7 +5,12 @@
     <entry>
       <title><![CDATA[Towards lightened VM Images]]></title>
       <url>/2017/05/31/lightened/</url>
-      <content type="html"><![CDATA[<h3 id="Heavy-Images"><a href="#Heavy-Images" class="headerlink" title="Heavy Images"></a>Heavy Images</h3><p>I have been working on cloud for a couple of years, and from time
+      <content type="html"><![CDATA[<p>VM Images are too heavy to move around. We propose a layered image
+system, to enable incremental transferring of images. This system
+imitates the agile image system of container, but in the level of 
+block store, instead of file system. </p>
+<a id="more"></a>
+<h3 id="Heavy-Images"><a href="#Heavy-Images" class="headerlink" title="Heavy Images"></a>Heavy Images</h3><p>I have been working on cloud for a couple of years, and from time
 to time I see difficulties with large VM images. Last week, a cusomter
 gave us a ticket saying they had a problem when creating a new image.
 After inspection, I found that the creating process was still going
@@ -57,7 +62,7 @@ that is similar to docker’s.</p>
       
         <categories>
             
-            <category> VM </category>
+            <category> image </category>
             
         </categories>
         
@@ -68,13 +73,7 @@ that is similar to docker’s.</p>
             
             <tag> hyperlayer </tag>
             
-            <tag> hypervisor </tag>
-            
-            <tag> vmm </tag>
-            
-            <tag> qemu </tag>
-            
-            <tag> qcow2 </tag>
+            <tag> VM </tag>
             
         </tags>
         
@@ -83,7 +82,13 @@ that is similar to docker’s.</p>
     <entry>
       <title><![CDATA[Torwards Hardened Container Images]]></title>
       <url>/2017/05/25/hardened/</url>
-      <content type="html"><![CDATA[<h3 id="The-Image-System-of-Container"><a href="#The-Image-System-of-Container" class="headerlink" title="The Image System of Container"></a>The Image System of Container</h3><p>Containers are becoming increasingly important in the era of cloud. 
+      <content type="html"><![CDATA[<p>Container images rely heavily on unstable technologies on file system.
+We propose a block-level layered image system, which shares the same design 
+of existing image system, but implemented in the level of block store,
+namely lvm, instead of file system. All the dependant features are mature, 
+stable, production-ready and maintained in mainline kernel of Linux.</p>
+<a id="more"></a>
+<h3 id="The-Image-System-of-Container"><a href="#The-Image-System-of-Container" class="headerlink" title="The Image System of Container"></a>The Image System of Container</h3><p>Containers are becoming increasingly important in the era of cloud. 
 More and more customers are interested in or already using containers, 
 to ship and run their applications.</p>
 <p>One of the key advantages of containers is the layered image system, 
@@ -142,7 +147,7 @@ that is similar to docker’s.</p>
       
         <categories>
             
-            <category> Container </category>
+            <category> image </category>
             
         </categories>
         
@@ -151,13 +156,7 @@ that is similar to docker’s.</p>
             
             <tag> container </tag>
             
-            <tag> docker </tag>
-            
             <tag> image </tag>
-            
-            <tag> block </tag>
-            
-            <tag> lvm </tag>
             
             <tag> hyperlayer </tag>
             
@@ -168,7 +167,12 @@ that is similar to docker’s.</p>
     <entry>
       <title><![CDATA[加固容器映像]]></title>
       <url>/2017/05/25/%E5%8A%A0%E5%9B%BA%E5%AE%B9%E5%99%A8%E6%98%A0%E5%83%8F/</url>
-      <content type="html"><![CDATA[<h3 id="容器的映像系统"><a href="#容器的映像系统" class="headerlink" title="容器的映像系统"></a>容器的映像系统</h3><p>容器在这个云计算时代变得愈发重要，越来越多的客户对容器产生了兴趣，甚至已经开始使用容器
+      <content type="html"><![CDATA[<p>容器映像严重依赖文件系统层面尚未稳定的功能，因此我们提议一种块层的映像系统，它与
+现有映像系统有着相同设分层设计，但实现在块存储层次（即lvm），而不是文件系统层次。
+这个设计所依赖的所有功能均已成熟稳定，达到生产环境的要求，并且都在Linux主线内核
+里维护。</p>
+<a id="more"></a>
+<h3 id="容器的映像系统"><a href="#容器的映像系统" class="headerlink" title="容器的映像系统"></a>容器的映像系统</h3><p>容器在这个云计算时代变得愈发重要，越来越多的客户对容器产生了兴趣，甚至已经开始使用容器
 来分发、部署和运行应用程序。</p>
 <p>容器的一个关键优势是其分层映像系统，它利用了aufs、btrfs、overlayfs、zfs、lvm以及
 device mapper等存储技术的先进特性。下图是从docker官方网站摘录出来的，它展示了docker
@@ -212,7 +216,7 @@ LVM和QCoW2。基于这种patch文件，我们可以实现跟docker类似的基�
       
         <categories>
             
-            <category> Container </category>
+            <category> image </category>
             
         </categories>
         
@@ -221,13 +225,7 @@ LVM和QCoW2。基于这种patch文件，我们可以实现跟docker类似的基�
             
             <tag> container </tag>
             
-            <tag> docker </tag>
-            
             <tag> image </tag>
-            
-            <tag> block </tag>
-            
-            <tag> lvm </tag>
             
             <tag> hyperlayer </tag>
             

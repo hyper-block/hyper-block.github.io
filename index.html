@@ -50,6 +50,8 @@ var themeMenus = {};
 
   themeMenus["/"] = "Home"; 
 
+  themeMenus["/categories"] = "Categories"; 
+
   themeMenus["/tags"] = "Tags"; 
 
   themeMenus["/about"] = "About"; 
@@ -81,6 +83,8 @@ var themeMenus = {};
                     
                       <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/">Home</a> </li>
                     
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/categories">Categories</a> </li>
+                    
                       <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/tags">Tags</a> </li>
                     
                       <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/about">About</a> </li>
@@ -103,6 +107,10 @@ var themeMenus = {};
       <div id="content" class="outer">
         
           <section id="main">
+
+
+
+
   
     <article id="post-lightened"  class="article article-type-post" itemscope itemprop="blogPost" >
   <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
@@ -128,65 +136,34 @@ var themeMenus = {};
     </div>
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="Heavy-Images"><a href="#Heavy-Images" class="headerlink" title="Heavy Images"></a>Heavy Images</h3><p>I have been working on cloud for a couple of years, and from time
-to time I see difficulties with large VM images. Last week, a cusomter
-gave us a ticket saying they had a problem when creating a new image.
-After inspection, I found that the creating process was still going
-on, as the image was so big (about 500GB) that the process was not
-able to get completed within a preset time-out period (one hour).</p>
-<p>The root cause of this incident is the heavy weight image. The size of
-a VM image is usually several GBs at least, and can grow to 10s of GBs
-easily, and it’s not uncommon to see 100s of GBs. Such big size is a
-major obstacle to transferring and operating VM images.</p>
-<p>On the other hand, container images are much more light-weight. Each
-time, only needed incremental layers are transferred, which can be as
-small as a few MB. This is the key advantage of docker —- agility.</p>
-<h3 id="Lightening-the-Images"><a href="#Lightening-the-Images" class="headerlink" title="Lightening the Images"></a>Lightening the Images</h3><p>Actually, VM can learn from the image system of docker. Layering is 
-actually a subset of a long-established feature —- snapshot. Each
-snapshot stores the differential data blocks compared with its parent
-snapshot —- roughly the same model with the layering model of 
-container image. The major distinction is block-level vs file-level,
-which is only an implementaion detail.</p>
-<p>The most important missing part of block-level snapshot is a set of tools 
-to export and import layers (snapshots). There was little need for
-this kind of tools, until container appears. We have developed these
-tools for qcow2 images, as well as LVM.</p>
-<p>The figure below shows the model for QCoW2 images: 
-(1) we suppose backing file plays the role of image, which serves all 
-    the dependent layers as read-only; 
-(2) and the “fronting” file plays the role of staging layer as read-write; 
-(3) every layer is essentially a snapshot.</p>
-<p><img src="/images/layered-image.png" alt="Layered Image"></p>
-<p>The two files (“fronting” and backing) in this model can not be 
-integrated into one, otherwise the image layers can not be shared by 
-multiple “fronting” files.</p>
-<h3 id="Exported-Format-of-Layers"><a href="#Exported-Format-of-Layers" class="headerlink" title="Exported Format of Layers"></a>Exported Format of Layers</h3><p>The layers are exported as HYPERLAYER format:</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">HYPERLAYER/1.0</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line"></div><div class="line">&lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">&lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">&lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">...</div></pre></td></tr></table></figure>
-<p>In which:</p>
-<ol>
-<li>keys and values are properties of the patch, consisting of letters (lower or 
-upper), digits and underscore, but no leading digits;</li>
-<li>offset and length are hex numbers with NO ‘0x’ prefix, in unit of sector (512 bytes);</li>
-<li>offsets are NOT required to be sorted;</li>
-<li>new lines is a single ‘\n’, without ‘\r’;</li>
-</ol>
-<p>For example:</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">HYPERLAYER/1.0</div><div class="line">Parent: 68044d4a72dfcf15018cfa6b4baf89361913d93d</div><div class="line">Author: Huiba Li &lt;lihuiba@gmail.com&gt;</div><div class="line">Date: Thu May 4 15:34:37 2017 +0800 </div><div class="line"></div><div class="line">0 8</div><div class="line">&lt;data of 4096 bytes&gt;</div><div class="line">800 80</div><div class="line">&lt;data of 65536 bytes&gt;</div><div class="line">...</div></pre></td></tr></table></figure>
-<p>This format is called <em>HyperLayer</em>. It‘s meant to be a generic diff/patch format 
-for all block-level storage systems, including but not limited to LVM and/or QCoW2. 
-With this kind of patch file, we are able to realize a block-level image system 
-that is similar to docker’s.</p>
+        
 
+          
+            <div class="entry-summary" style="margin-left:0;">
+            VM Images are too heavy to move around. We propose a layered image
+system, to enable incremental transferring of images. This system
+imitates the agile image system of container, but in the level of 
+block store, instead of file system. 
+
+Heavy ImagesI have been working on cloud for a couple of years, and from time
+to time I see difficulties wit...
+          
+
+        
+          <p class="article-more-link">
+            <a href="/2017/05/31/lightened/#more">Continue Reading →</a>
+          </p>
+        </div>
       
     </div>
     <footer class="entry-meta entry-footer">
       
 	<span class="ico-folder"></span>
-    <a class="article-category-link" href="/categories/VM/">VM</a>
+    <a class="article-category-link" href="/categories/image/">image</a>
 
       
   <span class="ico-tags"></span>
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hyperlayer/">hyperlayer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hypervisor/">hypervisor</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/image/">image</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/qcow2/">qcow2</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/qemu/">qemu</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/vmm/">vmm</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/VM/">VM</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hyperlayer/">hyperlayer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/image/">image</a></li></ul>
 
       
     </footer>
@@ -222,72 +199,32 @@ that is similar to docker’s.</p>
     </div>
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="The-Image-System-of-Container"><a href="#The-Image-System-of-Container" class="headerlink" title="The Image System of Container"></a>The Image System of Container</h3><p>Containers are becoming increasingly important in the era of cloud. 
-More and more customers are interested in or already using containers, 
-to ship and run their applications.</p>
-<p>One of the key advantages of containers is the layered image system, 
-which is based on storage technologies like aufs, btrfs, overlayfs, 
-zfs, lvm and device mapper. There’s a figure below, which is from the 
-official docker site. We can see in it that there are various choices 
-for different kinds of workloads, however, only one (lvm) of them is 
-both production-ready and maintained in mainline kernel of Linux. 
-Actually, lvm is the only advised productional choice for RHEL/CentOS 
-series distributions, which is by far the most popular Linux distribution 
-in production servers, especially in large enterprises.</p>
-<p><img src="/images/driver-pros-cons.png" alt="Storage Drivers"></p>
-<p>LVM is a block level storage technology, however, the layered imaging 
-system is designed with file system in mind, so there’s a semantic gap 
-between them: each layer in an image is constituted of modified files 
-and meta-data, while each layer (snapshot) in LVM is constituted of 
-modified blocks of data. In order to bridge the gap, the storage driver 
-for lvm has to enumerate all the files in adjacent layers, and see whether 
-each of them is changed or not. This is called <code>NaiveDiffDriver</code> in docker.</p>
-<p>Besides, this design choice has some fundamental problems: </p>
-<ol>
-<li>file system features are quite complex to develop, which is why none of
-the various file system drivers are ready today for productional evneironment;</li>
-<li>some advanced file system features are not well supported by file 
-system level drivers, like xattr, and thus SELinux; </li>
-<li>apps are not able to choose the type of file systems, even if they konw 
-that a specific type fits much better than any other ones; </li>
-<li>file systems’ meta data will get slower to read, as image layers increase; </li>
-<li>every first modification to large files has an extra long latency for 
-copy-on-write of the file, which leads to quite inconsistent I/O performance.</li>
-</ol>
-<h3 id="A-Block-Level-Image-System"><a href="#A-Block-Level-Image-System" class="headerlink" title="A Block-Level Image System"></a>A Block-Level Image System</h3><p>To address these problems,
-we propose a new image system that is based on block-level storage system,
-which supports all kinds of file systems, as well as their complete feature 
-sets; and provides consistent I/O performance in all cases. It is 
-based on long-established LVM, and we have created a new tool, called
-<code>lvdiffer</code>, to create a block-level patch file between adjacent LVM thin 
-volumes, as well as applying the patch to existing LVM thin volumes.</p>
-<p>The patch file has a simple and serializable format as this:</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">HYPERLAYER/1.0</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line"></div><div class="line">&lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">&lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">&lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">...</div></pre></td></tr></table></figure>
-<p>In which:</p>
-<ol>
-<li>keys and values are properties of the patch, consisting of letters (lower or 
-upper), digits and underscore, but no leading digits;</li>
-<li>offset and length are hex numbers with NO ‘0x’ prefix, in unit of sector (512 bytes);</li>
-<li>offsets are NOT required to be sorted;</li>
-<li>new lines is a single ‘\n’, without ‘\r’;</li>
-</ol>
-<p>For example:</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">HYPERLAYER/1.0</div><div class="line">Parent: 68044d4a72dfcf15018cfa6b4baf89361913d93d</div><div class="line">Author: Huiba Li &lt;lihuiba@gmail.com&gt;</div><div class="line">Date: Thu May 4 15:34:37 2017 +0800 </div><div class="line"></div><div class="line">0 8</div><div class="line">&lt;data of 4096 bytes&gt;</div><div class="line">800 80</div><div class="line">&lt;data of 65536 bytes&gt;</div><div class="line">...</div></pre></td></tr></table></figure>
-<p>This format is called <em>HyperLayer</em>. It‘s meant to be a generic diff/patch format 
-for all block-level storage systems, including but not limited to LVM and/or QCoW2. 
-With this kind of patch file, we are able to realize a block-level image system 
-that is similar to docker’s.</p>
+        
 
+          
+            <div class="entry-summary" style="margin-left:0;">
+            Container images rely heavily on unstable technologies on file system.
+We propose a block-level layered image system, which shares the same design 
+of existing image system, but implemented in the level of block store,
+namely lvm, instead of file system. All the dependant features are mature, 
+stable, production-ready and maintained in mainline ...
+          
+
+        
+          <p class="article-more-link">
+            <a href="/2017/05/25/hardened/#more">Continue Reading →</a>
+          </p>
+        </div>
       
     </div>
     <footer class="entry-meta entry-footer">
       
 	<span class="ico-folder"></span>
-    <a class="article-category-link" href="/categories/Container/">Container</a>
+    <a class="article-category-link" href="/categories/image/">image</a>
 
       
   <span class="ico-tags"></span>
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/block/">block</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/container/">container</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/">docker</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hyperlayer/">hyperlayer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/image/">image</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/lvm/">lvm</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/container/">container</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hyperlayer/">hyperlayer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/image/">image</a></li></ul>
 
       
     </footer>
@@ -323,57 +260,37 @@ that is similar to docker’s.</p>
     </div>
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="容器的映像系统"><a href="#容器的映像系统" class="headerlink" title="容器的映像系统"></a>容器的映像系统</h3><p>容器在这个云计算时代变得愈发重要，越来越多的客户对容器产生了兴趣，甚至已经开始使用容器
-来分发、部署和运行应用程序。</p>
-<p>容器的一个关键优势是其分层映像系统，它利用了aufs、btrfs、overlayfs、zfs、lvm以及
-device mapper等存储技术的先进特性。下图是从docker官方网站摘录出来的，它展示了docker
-对于各种不同的工作负载提供了许多存储driver选项。然而遗憾的是，它们当中只有lvm这一个选择
-同时满足production-ready和进入Linux内核这两项标准。事实上，lvm是官方唯一建议用于
-RHEL/CentOS生产环境的存储driver。RHEL/CentOS系列操作系统是生产服务器中最为广泛
-使用的Linux发行版，尤其是在大型企业里。</p>
-<p><img src="/images/driver-pros-cons.png" alt="Storage Drivers"></p>
-<p>LVM是一种块存储技术，然而docker的分层映像系统是基于文件系统技术设计的，所以他们之间
-存在一道语义鸿沟：映像中的每一层都是由被修改的文件以及文件元数据组成，而LVM中的每一层
-（快照）是由被修改的数据块组成。为了抹平这一鸿沟，lvm存储驱动需要遍历并对比相邻层次中
-的所有文件，并判断每个文件是否修改或新增。这一过程由docker中的<code>NaiveDiffDriver</code>类完成。</p>
-<p>除此之外，这一设计选择还有一些其他的基础性问题：</p>
-<ol>
-<li>文件系统层的功能特性通常实现起来都非常复杂，这就是为什么时至今日所有文件系统层的
-driver都还不适用于生产环境；</li>
-<li>一些文件系统层面的高级功能无法在现有设计里得到支持，例如扩展属性xattr，因此SELinux
-也无法使用；</li>
-<li>应用无法自主选择文件系统类型，即便某种特定的文件系统能使应用显著受益；</li>
-<li>当映像层数增加，文件系统的元数据访问会越来越慢；</li>
-<li>对任何大文件的第一次修改都会有很长的延迟，用来做文件的写时复制（Copy-on-Write），
-这将导致I/O性能的显著波动。</li>
-</ol>
-<h3 id="一种块级别的映像系统"><a href="#一种块级别的映像系统" class="headerlink" title="一种块级别的映像系统"></a>一种块级别的映像系统</h3><p>为了解决这些问题，我们提议一种新型的映像系统，基于块存储来设计，可以支持任何类型的文件系统，
-以及文件系统的完整功能集合，也可以保障持续、稳定的I/O性能。这一设计基于久经考验的LVM，同时
-我们也设计了一个新的工具<code>lvdiffer</code>，来创建或应用块层次的patch/diff文件。</p>
-<p>设计的patch文件具有简单且可序列化的格式，如下所示：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">HYPERLAYER/1.0</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line"></div><div class="line">&lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">&lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">&lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">...</div></pre></td></tr></table></figure>
-<p>其中：</p>
-<ol>
-<li>key和value是该patch文件的属性，由大小写字母、数字和下划线组成，并且首字符不能是数字；</li>
-<li>offset和length是16进制数字，没有’0x’前缀，以sector为单位（512字节）；</li>
-<li>offset不需要依照某种特定顺序排列；</li>
-<li>换行符是单个’\n’，没有’\r’；</li>
-</ol>
-<p>例如：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">HYPERLAYER/1.0</div><div class="line">Parent: 68044d4a72dfcf15018cfa6b4baf89361913d93d</div><div class="line">Author: Huiba Li &lt;lihuiba@gmail.com&gt;</div><div class="line">Date: Thu May 4 15:34:37 2017 +0800 </div><div class="line"></div><div class="line">0 8</div><div class="line">&lt;data of 4096 bytes&gt;</div><div class="line">800 80</div><div class="line">&lt;data of 65536 bytes&gt;</div><div class="line">...</div></pre></td></tr></table></figure>
-<p>这种格式叫做<em>HyperLayer</em>，它被设计为一种通用的块存储系统diff/patch格式，可用于（但不限于）
-LVM和QCoW2。基于这种patch文件，我们可以实现跟docker类似的基于块存储的映像系统。</p>
+        
 
+          
+            <div class="entry-summary" style="margin-left:0;">
+            容器映像严重依赖文件系统层面尚未稳定的功能，因此我们提议一种块层的映像系统，它与
+现有映像系统有着相同设分层设计，但实现在块存储层次（即lvm），而不是文件系统层次。
+这个设计所依赖的所有功能均已成熟稳定，达到生产环境的要求，并且都在Linux主线内核
+里维护。
+
+容器的映像系统容器在这个云计算时代变得愈发重要，越来越多的客户对容器产生了兴趣，甚至已经开始使用容器
+来分发、部署和运行应用程序。
+容器的一个关键优势是其分层映像系统，它利用了aufs、btrfs、overlayfs、zfs、lvm以及
+device mapper等存储技术的先进特性。下图是从docker官方网站摘录出来的，它展示了docker
+对于各种不同的工作负载提供了许多存储driver选项。然而遗憾的是，它们当中只有...
+          
+
+        
+          <p class="article-more-link">
+            <a href="/2017/05/25/加固容器映像/#more">Continue Reading →</a>
+          </p>
+        </div>
       
     </div>
     <footer class="entry-meta entry-footer">
       
 	<span class="ico-folder"></span>
-    <a class="article-category-link" href="/categories/Container/">Container</a>
+    <a class="article-category-link" href="/categories/image/">image</a>
 
       
   <span class="ico-tags"></span>
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/block/">block</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/container/">container</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/">docker</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hyperlayer/">hyperlayer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/image/">image</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/lvm/">lvm</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/container/">container</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hyperlayer/">hyperlayer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/image/">image</a></li></ul>
 
       
     </footer>
@@ -535,7 +452,7 @@ LVM和QCoW2。基于这种patch文件，我们可以实现跟docker类似的基�
   <div class="widget-wrap">
     <h3 class="widget-title">Categories</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Container/">Container</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/VM/">VM</a><span class="category-list-count">1</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/image/">image</a><span class="category-list-count">3</span></li></ul>
     </div>
   </div>
 
@@ -545,7 +462,7 @@ LVM和QCoW2。基于这种patch文件，我们可以实现跟docker类似的基�
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/block/" style="font-size: 15px;">block</a> <a href="/tags/container/" style="font-size: 15px;">container</a> <a href="/tags/docker/" style="font-size: 15px;">docker</a> <a href="/tags/hyperlayer/" style="font-size: 20px;">hyperlayer</a> <a href="/tags/hypervisor/" style="font-size: 10px;">hypervisor</a> <a href="/tags/image/" style="font-size: 20px;">image</a> <a href="/tags/lvm/" style="font-size: 15px;">lvm</a> <a href="/tags/qcow2/" style="font-size: 10px;">qcow2</a> <a href="/tags/qemu/" style="font-size: 10px;">qemu</a> <a href="/tags/vmm/" style="font-size: 10px;">vmm</a>
+      <a href="/tags/VM/" style="font-size: 10px;">VM</a> <a href="/tags/container/" style="font-size: 15px;">container</a> <a href="/tags/hyperlayer/" style="font-size: 20px;">hyperlayer</a> <a href="/tags/image/" style="font-size: 20px;">image</a>
     </div>
   </div>
 
@@ -580,6 +497,8 @@ LVM和QCoW2。基于这种patch文件，我们可以实现跟docker类似的基�
     <!-- <nav id="mobile-nav">
   
     <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
   
     <a href="/tags" class="mobile-nav-link">Tags</a>
   

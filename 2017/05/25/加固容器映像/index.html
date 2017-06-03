@@ -6,23 +6,23 @@
   <title>加固容器映像 | Hyper Block</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
-    <meta name="keywords" content="container, hypervisor, vm, virtual machine, storage, block, qcow2, lvm, hyperblock, hyperlayer" />
+    <meta name="keywords" content="container, docker, image, block, lvm, hyperlayer" />
   
   
   
   
-  <meta name="description" content="容器的映像系统容器在这个云计算时代变得愈发重要，越来越多的客户对容器产生了兴趣，甚至已经开始使用容器 来分发、部署和运行应用程序。 容器的一个关键优势是其分层映像系统，它利用了aufs、btrfs、overlayfs、zfs、lvm以及 device mapper等存储技术的先进特性。下图是从docker官方网站摘录出来的，它展示了docker 对于各种不同的工作负载提供了许多存储driver选项">
-<meta name="keywords" content="container,docker,image,block,lvm,hyperlayer">
+  <meta name="description" content="容器映像严重依赖文件系统层面尚未稳定的功能，因此我们提议一种块层的映像系统，它与 现有映像系统有着相同设分层设计，但实现在块存储层次（即lvm），而不是文件系统层次。 这个设计所依赖的所有功能均已成熟稳定，达到生产环境的要求，并且都在Linux主线内核 里维护。">
+<meta name="keywords" content="container, docker, image, block, lvm, hyperlayer">
 <meta property="og:type" content="article">
 <meta property="og:title" content="加固容器映像">
 <meta property="og:url" content="http://www.hyperblock.org/2017/05/25/加固容器映像/index.html">
 <meta property="og:site_name" content="Hyper Block">
-<meta property="og:description" content="容器的映像系统容器在这个云计算时代变得愈发重要，越来越多的客户对容器产生了兴趣，甚至已经开始使用容器 来分发、部署和运行应用程序。 容器的一个关键优势是其分层映像系统，它利用了aufs、btrfs、overlayfs、zfs、lvm以及 device mapper等存储技术的先进特性。下图是从docker官方网站摘录出来的，它展示了docker 对于各种不同的工作负载提供了许多存储driver选项">
+<meta property="og:description" content="容器映像严重依赖文件系统层面尚未稳定的功能，因此我们提议一种块层的映像系统，它与 现有映像系统有着相同设分层设计，但实现在块存储层次（即lvm），而不是文件系统层次。 这个设计所依赖的所有功能均已成熟稳定，达到生产环境的要求，并且都在Linux主线内核 里维护。">
 <meta property="og:image" content="http://www.hyperblock.org/images/driver-pros-cons.png">
-<meta property="og:updated_time" content="2017-06-01T11:34:00.000Z">
+<meta property="og:updated_time" content="2017-06-03T08:28:01.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="加固容器映像">
-<meta name="twitter:description" content="容器的映像系统容器在这个云计算时代变得愈发重要，越来越多的客户对容器产生了兴趣，甚至已经开始使用容器 来分发、部署和运行应用程序。 容器的一个关键优势是其分层映像系统，它利用了aufs、btrfs、overlayfs、zfs、lvm以及 device mapper等存储技术的先进特性。下图是从docker官方网站摘录出来的，它展示了docker 对于各种不同的工作负载提供了许多存储driver选项">
+<meta name="twitter:description" content="容器映像严重依赖文件系统层面尚未稳定的功能，因此我们提议一种块层的映像系统，它与 现有映像系统有着相同设分层设计，但实现在块存储层次（即lvm），而不是文件系统层次。 这个设计所依赖的所有功能均已成熟稳定，达到生产环境的要求，并且都在Linux主线内核 里维护。">
 <meta name="twitter:image" content="http://www.hyperblock.org/images/driver-pros-cons.png">
   
     <link rel="alternate" href="/atom.xml" title="Hyper Block" type="application/atom+xml">
@@ -57,6 +57,8 @@ var themeMenus = {};
 
   themeMenus["/"] = "Home"; 
 
+  themeMenus["/categories"] = "Categories"; 
+
   themeMenus["/tags"] = "Tags"; 
 
   themeMenus["/about"] = "About"; 
@@ -87,6 +89,8 @@ var themeMenus = {};
               <ul id="main-nav" class="nmenu sf-js-enabled">
                     
                       <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/">Home</a> </li>
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/categories">Categories</a> </li>
                     
                       <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/tags">Tags</a> </li>
                     
@@ -133,7 +137,12 @@ var themeMenus = {};
     </div>
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="容器的映像系统"><a href="#容器的映像系统" class="headerlink" title="容器的映像系统"></a>容器的映像系统</h3><p>容器在这个云计算时代变得愈发重要，越来越多的客户对容器产生了兴趣，甚至已经开始使用容器
+        <p>容器映像严重依赖文件系统层面尚未稳定的功能，因此我们提议一种块层的映像系统，它与
+现有映像系统有着相同设分层设计，但实现在块存储层次（即lvm），而不是文件系统层次。
+这个设计所依赖的所有功能均已成熟稳定，达到生产环境的要求，并且都在Linux主线内核
+里维护。</p>
+<a id="more"></a>
+<h3 id="容器的映像系统"><a href="#容器的映像系统" class="headerlink" title="容器的映像系统"></a>容器的映像系统</h3><p>容器在这个云计算时代变得愈发重要，越来越多的客户对容器产生了兴趣，甚至已经开始使用容器
 来分发、部署和运行应用程序。</p>
 <p>容器的一个关键优势是其分层映像系统，它利用了aufs、btrfs、overlayfs、zfs、lvm以及
 device mapper等存储技术的先进特性。下图是从docker官方网站摘录出来的，它展示了docker
@@ -179,11 +188,11 @@ LVM和QCoW2。基于这种patch文件，我们可以实现跟docker类似的基�
     <footer class="entry-meta entry-footer">
       
 	<span class="ico-folder"></span>
-    <a class="article-category-link" href="/categories/Container/">Container</a>
+    <a class="article-category-link" href="/categories/image/">image</a>
 
       
   <span class="ico-tags"></span>
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/block/">block</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/container/">container</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/">docker</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hyperlayer/">hyperlayer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/image/">image</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/lvm/">lvm</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/container/">container</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hyperlayer/">hyperlayer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/image/">image</a></li></ul>
 
       
         
@@ -266,6 +275,8 @@ $(document).ready(function(){
     <!-- <nav id="mobile-nav">
   
     <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
   
     <a href="/tags" class="mobile-nav-link">Tags</a>
   

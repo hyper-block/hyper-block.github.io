@@ -6,23 +6,23 @@
   <title>towards lightened vm images | Hyper Block</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
-    <meta name="keywords" content="container, hypervisor, vm, virtual machine, storage, block, qcow2, lvm, hyperblock, hyperlayer" />
+    <meta name="keywords" content="hypervisor, vmm, image, qemu, qcow2, hyperlayer" />
   
   
   
   
-  <meta name="description" content="Heavy ImagesI have been working on cloud for a couple of years, and from time to time I see difficulties with large VM images. Last week, a cusomter gave us a ticket saying they had a problem when cre">
-<meta name="keywords" content="image,hyperlayer,hypervisor,vmm,qemu,qcow2">
+  <meta name="description" content="VM Images are too heavy to move around. We propose a layered image system, to enable incremental transferring of images. This system imitates the agile image system of container, but in the level of">
+<meta name="keywords" content="hypervisor, vmm, image, qemu, qcow2, hyperlayer">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Towards lightened VM Images">
 <meta property="og:url" content="http://www.hyperblock.org/2017/05/31/lightened/index.html">
 <meta property="og:site_name" content="Hyper Block">
-<meta property="og:description" content="Heavy ImagesI have been working on cloud for a couple of years, and from time to time I see difficulties with large VM images. Last week, a cusomter gave us a ticket saying they had a problem when cre">
+<meta property="og:description" content="VM Images are too heavy to move around. We propose a layered image system, to enable incremental transferring of images. This system imitates the agile image system of container, but in the level of">
 <meta property="og:image" content="http://www.hyperblock.org/images/layered-image.png">
-<meta property="og:updated_time" content="2017-06-01T11:29:58.000Z">
+<meta property="og:updated_time" content="2017-06-03T08:28:05.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Towards lightened VM Images">
-<meta name="twitter:description" content="Heavy ImagesI have been working on cloud for a couple of years, and from time to time I see difficulties with large VM images. Last week, a cusomter gave us a ticket saying they had a problem when cre">
+<meta name="twitter:description" content="VM Images are too heavy to move around. We propose a layered image system, to enable incremental transferring of images. This system imitates the agile image system of container, but in the level of">
 <meta name="twitter:image" content="http://www.hyperblock.org/images/layered-image.png">
   
     <link rel="alternate" href="/atom.xml" title="Hyper Block" type="application/atom+xml">
@@ -57,6 +57,8 @@ var themeMenus = {};
 
   themeMenus["/"] = "Home"; 
 
+  themeMenus["/categories"] = "Categories"; 
+
   themeMenus["/tags"] = "Tags"; 
 
   themeMenus["/about"] = "About"; 
@@ -87,6 +89,8 @@ var themeMenus = {};
               <ul id="main-nav" class="nmenu sf-js-enabled">
                     
                       <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/">Home</a> </li>
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/categories">Categories</a> </li>
                     
                       <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/tags">Tags</a> </li>
                     
@@ -133,7 +137,12 @@ var themeMenus = {};
     </div>
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="Heavy-Images"><a href="#Heavy-Images" class="headerlink" title="Heavy Images"></a>Heavy Images</h3><p>I have been working on cloud for a couple of years, and from time
+        <p>VM Images are too heavy to move around. We propose a layered image
+system, to enable incremental transferring of images. This system
+imitates the agile image system of container, but in the level of 
+block store, instead of file system. </p>
+<a id="more"></a>
+<h3 id="Heavy-Images"><a href="#Heavy-Images" class="headerlink" title="Heavy Images"></a>Heavy Images</h3><p>I have been working on cloud for a couple of years, and from time
 to time I see difficulties with large VM images. Last week, a cusomter
 gave us a ticket saying they had a problem when creating a new image.
 After inspection, I found that the creating process was still going
@@ -187,11 +196,11 @@ that is similar to docker’s.</p>
     <footer class="entry-meta entry-footer">
       
 	<span class="ico-folder"></span>
-    <a class="article-category-link" href="/categories/VM/">VM</a>
+    <a class="article-category-link" href="/categories/image/">image</a>
 
       
   <span class="ico-tags"></span>
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hyperlayer/">hyperlayer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hypervisor/">hypervisor</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/image/">image</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/qcow2/">qcow2</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/qemu/">qemu</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/vmm/">vmm</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/VM/">VM</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hyperlayer/">hyperlayer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/image/">image</a></li></ul>
 
       
         
@@ -274,6 +283,8 @@ $(document).ready(function(){
     <!-- <nav id="mobile-nav">
   
     <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
   
     <a href="/tags" class="mobile-nav-link">Tags</a>
   
