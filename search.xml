@@ -149,9 +149,9 @@ that is similar to docker’s.</p>
       
         <categories>
             
-            <category> image </category>
-            
             <category> English </category>
+            
+            <category> image </category>
             
         </categories>
         
