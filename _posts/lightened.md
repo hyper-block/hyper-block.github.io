@@ -35,8 +35,8 @@ small as a few MB. This is the key advantage of docker ---- agility.
 
 Actually, VM can learn from the image system of docker. Layering is 
 actually a subset of a long-established feature ---- snapshot. Each
-snapshot stores the differential data blocks compared with its parent
-snapshot ---- roughly the same model with the layering model of 
+snapshot stores the differential data blocks compared with the previous
+one ---- roughly the same model with the layering model of 
 container image. The major distinction is block-level vs file-level,
 which is only an implementaion detail.
 
