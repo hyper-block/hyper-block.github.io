@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   
-  <title>towards lightened vm images | Hyper Block</title>
+  <title>敏捷vm映像 | Hyper Block</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
     <meta name="keywords" content="hypervisor, vmm, image, qemu, qcow2, hyperlayer" />
@@ -11,18 +11,18 @@
   
   
   
-  <meta name="description" content="VM Images are too heavy to move around. We propose a layered image system, to enable incremental transferring of images. This system imitates the agile image system of container, but in the level of">
+  <meta name="description" content="虚拟机映像一般都比较大，因而难以搬移。针对这一问题我们提议一种分层映像系统， 以使能映像的增量传输。这一系统模仿了容器的非常敏捷的映像系统，但处于块存储级别， 而不是文件系统级别。">
 <meta name="keywords" content="hypervisor, vmm, image, qemu, qcow2, hyperlayer">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Towards lightened VM Images">
-<meta property="og:url" content="http://www.hyperblock.org/2017/05/31/lightened/index.html">
+<meta property="og:title" content="敏捷VM映像">
+<meta property="og:url" content="http://www.hyperblock.org/2017/06/05/敏捷VM映像/index.html">
 <meta property="og:site_name" content="Hyper Block">
-<meta property="og:description" content="VM Images are too heavy to move around. We propose a layered image system, to enable incremental transferring of images. This system imitates the agile image system of container, but in the level of">
+<meta property="og:description" content="虚拟机映像一般都比较大，因而难以搬移。针对这一问题我们提议一种分层映像系统， 以使能映像的增量传输。这一系统模仿了容器的非常敏捷的映像系统，但处于块存储级别， 而不是文件系统级别。">
 <meta property="og:image" content="http://www.hyperblock.org/images/layered-image.png">
-<meta property="og:updated_time" content="2017-06-05T12:10:33.000Z">
+<meta property="og:updated_time" content="2017-06-05T12:22:19.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Towards lightened VM Images">
-<meta name="twitter:description" content="VM Images are too heavy to move around. We propose a layered image system, to enable incremental transferring of images. This system imitates the agile image system of container, but in the level of">
+<meta name="twitter:title" content="敏捷VM映像">
+<meta name="twitter:description" content="虚拟机映像一般都比较大，因而难以搬移。针对这一问题我们提议一种分层映像系统， 以使能映像的增量传输。这一系统模仿了容器的非常敏捷的映像系统，但处于块存储级别， 而不是文件系统级别。">
 <meta name="twitter:image" content="http://www.hyperblock.org/images/layered-image.png">
   
     <link rel="alternate" href="/atom.xml" title="Hyper Block" type="application/atom+xml">
@@ -113,7 +113,7 @@ var themeMenus = {};
             
       <div id="content" class="outer">
         
-          <section id="main" style="float:none;"><article id="post-lightened" style="width: 66%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+          <section id="main" style="float:none;"><article id="post-敏捷VM映像" style="width: 66%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
   <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
     
     
@@ -121,7 +121,7 @@ var themeMenus = {};
         
   
     <h1 class="thumb" class="article-title" itemprop="name">
-      Towards lightened VM Images
+      敏捷VM映像
     </h1>
   
 
@@ -129,8 +129,8 @@ var themeMenus = {};
     
     <div class="article-meta">
       
-	Posted on <a href="/2017/05/31/lightened/" class="article-date">
-	  <time datetime="2017-05-30T16:00:00.000Z" itemprop="datePublished">May 31, 2017</time>
+	Posted on <a href="/2017/06/05/敏捷VM映像/" class="article-date">
+	  <time datetime="2017-06-04T16:00:00.000Z" itemprop="datePublished">June 5, 2017</time>
 	</a> &nbsp; Huiba Li
 
 
@@ -139,66 +139,49 @@ var themeMenus = {};
     </div>
     <div class="article-entry" itemprop="articleBody">
       
-        <p>VM Images are too heavy to move around. We propose a layered image
-system, to enable incremental transferring of images. This system
-imitates the agile image system of container, but in the level of 
-block store, instead of file system. </p>
+        <p>虚拟机映像一般都比较大，因而难以搬移。针对这一问题我们提议一种分层映像系统，
+以使能映像的增量传输。这一系统模仿了容器的非常敏捷的映像系统，但处于块存储级别，
+而不是文件系统级别。</p>
 <a id="more"></a>
-<h3 id="Heavy-Images"><a href="#Heavy-Images" class="headerlink" title="Heavy Images"></a>Heavy Images</h3><p>I have been working on cloud for a couple of years, and from time
-to time I see difficulties with large VM images. Last week, a cusomter
-gave us a ticket saying they had a problem when creating a new image.
-After inspection, I found that the creating process was still going
-on, as the image was so big (about 500GB) that the process was not
-able to get completed within a preset time-out period (one hour).</p>
-<p>The root cause of this incident is the heavy weight image. The size of
-a VM image is usually several GBs at least, and can grow to 10s of GBs
-easily, and it’s not uncommon to see 100s of GBs. Such big size is a
-major obstacle to transferring and operating VM images.</p>
-<p>On the other hand, container images are much more light-weight. Each
-time, only needed incremental layers are transferred, which can be as
-small as a few MB. This is the key advantage of docker —- agility.</p>
-<h3 id="Lightening-the-Images"><a href="#Lightening-the-Images" class="headerlink" title="Lightening the Images"></a>Lightening the Images</h3><p>Actually, VM can learn from the image system of docker. Layering is 
-actually a subset of a long-established feature —- snapshot. Each
-snapshot stores the differential data blocks compared with the previous
-one —- roughly the same model with the layering model of 
-container image. The major distinction is block-level vs file-level,
-which is only an implementaion detail.</p>
-<p>The most important missing part of block-level snapshot is a set of tools 
-to export and import layers (snapshots). There was little need for
-this kind of tools, until container appears. We have developed these
-tools for qcow2 images, as well as LVM.</p>
-<p>The figure below shows the model for QCoW2 images: 
-(1) we suppose backing file plays the role of image, which serves all 
-    the dependent layers as read-only; 
-(2) and the “fronting” file plays the role of staging layer as read-write; 
-(3) every layer is essentially a snapshot.</p>
+<h3 id="沉重的映像"><a href="#沉重的映像" class="headerlink" title="沉重的映像"></a>沉重的映像</h3><p>我在云计算领域已经工作了许多年，时不时就会遇到处理超大VM映像的问题。上一周，有一位
+客户提工单说他们在创建新映像时遇到了困难。在调查之后，我发现映像的创建过程仍在持续，
+因为映像非常之大（大约500GB）以至于该流程无法在预定义的时间上限（一小时）内完成。</p>
+<p>这一问题的根源是重量级的映像。虚拟机映像通常至少有几GB大，并且可轻易增长到几十GB，
+几百GB也不罕见。这么大的尺寸是传输和操作映像的主要障碍。</p>
+<p>在另一面，容器映像则轻量得多。每一次只需要传输增量层次，数据量可以低至几MB。这是容器
+的关键优势————敏捷。</p>
+<h3 id="减轻映像"><a href="#减轻映像" class="headerlink" title="减轻映像"></a>减轻映像</h3><p>事实上，VM映像可以效仿容器。层化其实是快照技术这一历史悠久的功能特性的子集。每次快照
+都存储相对上一次快照的差异数据————基本上跟容器映像的分层模型相同，最主要的区别在于
+块存储级别vs文件存储级别，而这可以视为一种实现细节。</p>
+<p>块级快照最主要的缺失项是一组导入、导出映像层次（快照）的工具集。业内之前对此几乎没有需求，
+直到容器出现。我们分别针对QCoW2文件以及LVM开发了这些工具。</p>
+<p>下图展示了针对QCoW2文件的分层映像模型：
+(1) 假设 backing file 用作映像，它包含所有的依赖层次，提供只读服务；
+(2) “fronting” file 是可读可写的staging层;
+(3) 每个层次实质上都是快照；</p>
 <p><img src="/images/layered-image.png" alt="Layered Image"></p>
-<p>The two files (“fronting” and backing) in this model can not be 
-integrated into one, otherwise the image layers can not be shared by 
-multiple “fronting” files.</p>
-<h3 id="Exported-Format-of-Layers"><a href="#Exported-Format-of-Layers" class="headerlink" title="Exported Format of Layers"></a>Exported Format of Layers</h3><p>The layers are exported as HYPERLAYER format:</p>
+<p>这一模型中的两个文件(“fronting” and backing)不能合成为一个，否则映像中的层次
+难以被多个 “fronting” files 共享。</p>
+<h3 id="导出格式"><a href="#导出格式" class="headerlink" title="导出格式"></a>导出格式</h3><p>映像层次被导出为HYPERLAYER格式，如下所示:</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">HYPERLAYER/1.0</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line"></div><div class="line">&lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">&lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">&lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">...</div></pre></td></tr></table></figure>
-<p>In which:</p>
+<p>其中：</p>
 <ol>
-<li>keys and values are properties of the patch, consisting of letters (lower or 
-upper), digits and underscore, but no leading digits;</li>
-<li>offset and length are hex numbers with NO ‘0x’ prefix, in unit of sector (512 bytes);</li>
-<li>offsets are NOT required to be sorted;</li>
-<li>new lines is a single ‘\n’, without ‘\r’;</li>
+<li>key和value是该patch文件的属性，由大小写字母、数字和下划线组成，并且首字符不能是数字；</li>
+<li>offset和length是16进制数字，没有’0x’前缀，以sector为单位（512字节）；</li>
+<li>offset不需要依照某种特定顺序排列；</li>
+<li>换行符是单个’\n’，没有’\r’；</li>
 </ol>
-<p>For example:</p>
+<p>例如：</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">HYPERLAYER/1.0</div><div class="line">Parent: 68044d4a72dfcf15018cfa6b4baf89361913d93d</div><div class="line">Author: Huiba Li &lt;lihuiba@gmail.com&gt;</div><div class="line">Date: Thu May 4 15:34:37 2017 +0800 </div><div class="line"></div><div class="line">0 8</div><div class="line">&lt;data of 4096 bytes&gt;</div><div class="line">800 80</div><div class="line">&lt;data of 65536 bytes&gt;</div><div class="line">...</div></pre></td></tr></table></figure>
-<p>This format is called <em>HyperLayer</em>. It‘s meant to be a generic diff/patch format 
-for all block-level storage systems, including but not limited to LVM and/or QCoW2. 
-With this kind of patch file, we are able to realize a block-level image system 
-that is similar to docker’s.</p>
+<p>这种格式叫做<em>HyperLayer</em>，它被设计为一种通用的块存储系统diff/patch格式，可用于（但不限于）
+LVM和QCoW2。基于这种patch文件，我们可以实现跟docker类似的基于块存储的映像系统。</p>
 
       
     </div>
     <footer class="entry-meta entry-footer">
       
 	<span class="ico-folder"></span>
-    <a class="article-category-link" href="/categories/English/">English</a>, <a class="article-category-link" href="/categories/English/image/">image</a>
+    <a class="article-category-link" href="/categories/中文/">中文</a>, <a class="article-category-link" href="/categories/中文/image/">image</a>
 
       
   <span class="ico-tags"></span>
@@ -250,7 +233,7 @@ $(document).ready(function(){
     <div id="toc" class="toc-article">
     <strong class="toc-title">Contents</strong>
     
-      <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Heavy-Images"><span class="nav-number">1.</span> <span class="nav-text">Heavy Images</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lightening-the-Images"><span class="nav-number">2.</span> <span class="nav-text">Lightening the Images</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Exported-Format-of-Layers"><span class="nav-number">3.</span> <span class="nav-text">Exported Format of Layers</span></a></li></ol>
+      <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#沉重的映像"><span class="nav-number">1.</span> <span class="nav-text">沉重的映像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#减轻映像"><span class="nav-number">2.</span> <span class="nav-text">减轻映像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#导出格式"><span class="nav-number">3.</span> <span class="nav-text">导出格式</span></a></li></ol>
     
     </div>
   </aside>

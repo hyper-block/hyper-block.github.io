@@ -111,6 +111,76 @@ var themeMenus = {};
 
 
 
+
+  
+    <article id="post-敏捷VM映像"  class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" itemprop="name">
+      <a class="article-title" href="/2017/06/05/敏捷VM映像/">敏捷VM映像</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	Posted on <a href="/2017/06/05/敏捷VM映像/" class="article-date">
+	  <time datetime="2017-06-04T16:00:00.000Z" itemprop="datePublished">June 5, 2017</time>
+	</a> &nbsp; Huiba Li
+
+
+
+      
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+
+          
+            <div class="entry-summary" style="margin-left:0;">
+            虚拟机映像一般都比较大，因而难以搬移。针对这一问题我们提议一种分层映像系统，
+以使能映像的增量传输。这一系统模仿了容器的非常敏捷的映像系统，但处于块存储级别，
+而不是文件系统级别。
+
+沉重的映像我在云计算领域已经工作了许多年，时不时就会遇到处理超大VM映像的问题。上一周，有一位
+客户提工单说他们在创建新映像时遇到了困难。在调查之后，我发现映像的创建过程仍在持续，
+因为映像非常之大（大约500GB）以至于该流程无法在预定义的时间上限（一小时）内完成。
+这一问题的根源是重量级的映像。虚拟机映像通常至少有几GB大，并且可轻易增长到几十GB，
+几百GB也不罕见。这么大的尺寸是传输和操作映像的主要障碍。
+在另一面，容器映像则轻量得多。每一次只需要传输增量层次，数据量可以低至几MB。这是容器
+的关...
+          
+
+        
+          <p class="article-more-link">
+            <a href="/2017/06/05/敏捷VM映像/#more">Continue Reading →</a>
+          </p>
+        </div>
+      
+    </div>
+    <footer class="entry-meta entry-footer">
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/中文/">中文</a>, <a class="article-category-link" href="/categories/中文/image/">image</a>
+
+      
+  <span class="ico-tags"></span>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/VM/">VM</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hyperlayer/">hyperlayer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/image/">image</a></li></ul>
+
+      
+    </footer>
+  </div>
+  
+</article>
+
+<!-- Table of Contents -->
+
+
   
     <article id="post-lightened"  class="article article-type-post" itemscope itemprop="blogPost" >
   <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
@@ -419,6 +489,18 @@ device mapper等存储技术的先进特性。下图是从docker官方网站摘�
               <div class="widget-entry-summary" style="margin: 0;">
             
 
+              <h6 style="margin: 0;"><a href="/2017/06/05/敏捷VM映像/">敏捷VM映像</a></h6>
+              <span>June 5, 2017</span>
+            </div>
+
+          </li>
+        
+          <li class="clearfix">
+
+            
+              <div class="widget-entry-summary" style="margin: 0;">
+            
+
               <h6 style="margin: 0;"><a href="/2017/05/31/lightened/">Towards lightened VM Images</a></h6>
               <span>May 31, 2017</span>
             </div>
@@ -458,7 +540,7 @@ device mapper等存储技术的先进特性。下图是从docker官方网站摘�
   <div class="widget-wrap">
     <h3 class="widget-title">Categories</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/English/">English</a><span class="category-list-count">2</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/English/image/">image</a><span class="category-list-count">2</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/中文/">中文</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/中文/image/">image</a><span class="category-list-count">1</span></li></ul></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/English/">English</a><span class="category-list-count">2</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/English/image/">image</a><span class="category-list-count">2</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/中文/">中文</a><span class="category-list-count">2</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/中文/image/">image</a><span class="category-list-count">2</span></li></ul></li></ul>
     </div>
   </div>
 
@@ -468,7 +550,7 @@ device mapper等存储技术的先进特性。下图是从docker官方网站摘�
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/VM/" style="font-size: 10px;">VM</a> <a href="/tags/container/" style="font-size: 15px;">container</a> <a href="/tags/hyperlayer/" style="font-size: 20px;">hyperlayer</a> <a href="/tags/image/" style="font-size: 20px;">image</a>
+      <a href="/tags/VM/" style="font-size: 10px;">VM</a> <a href="/tags/container/" style="font-size: 10px;">container</a> <a href="/tags/hyperlayer/" style="font-size: 20px;">hyperlayer</a> <a href="/tags/image/" style="font-size: 20px;">image</a>
     </div>
   </div>
 
