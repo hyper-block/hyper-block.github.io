@@ -19,7 +19,7 @@
 <meta property="og:site_name" content="Hyper Block">
 <meta property="og:description" content="Container images rely heavily on unstable technologies on file system. We propose a block-level layered image system, which shares the same design  of existing image system, but implemented in the lev">
 <meta property="og:image" content="http://www.hyperblock.org/images/driver-pros-cons.png">
-<meta property="og:updated_time" content="2017-06-03T10:03:17.000Z">
+<meta property="og:updated_time" content="2017-06-16T11:49:49.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Torwards Hardened Container Images">
 <meta name="twitter:description" content="Container images rely heavily on unstable technologies on file system. We propose a block-level layered image system, which shares the same design  of existing image system, but implemented in the lev">
@@ -184,22 +184,8 @@ sets; and provides consistent I/O performance in all cases. It is
 based on long-established LVM, and we have created a new tool, called
 <code>lvdiffer</code>, to create a block-level patch file between adjacent LVM thin 
 volumes, as well as applying the patch to existing LVM thin volumes.</p>
-<p>The patch file has a simple and serializable format as this:</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">HYPERLAYER/1.0</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line"></div><div class="line">&lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">&lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">&lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">...</div></pre></td></tr></table></figure>
-<p>In which:</p>
-<ol>
-<li>keys and values are properties of the patch, consisting of letters (lower or 
-upper), digits and underscore, but no leading digits;</li>
-<li>offset and length are hex numbers with NO ‘0x’ prefix, in unit of sector (512 bytes);</li>
-<li>offsets are NOT required to be sorted;</li>
-<li>new lines is a single ‘\n’, without ‘\r’;</li>
-</ol>
-<p>For example:</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">HYPERLAYER/1.0</div><div class="line">Parent: 68044d4a72dfcf15018cfa6b4baf89361913d93d</div><div class="line">Author: Huiba Li &lt;lihuiba@gmail.com&gt;</div><div class="line">Date: Thu May 4 15:34:37 2017 +0800 </div><div class="line"></div><div class="line">0 8</div><div class="line">&lt;data of 4096 bytes&gt;</div><div class="line">800 80</div><div class="line">&lt;data of 65536 bytes&gt;</div><div class="line">...</div></pre></td></tr></table></figure>
-<p>This format is called <em>HyperLayer</em>. It‘s meant to be a generic diff/patch format 
-for all block-level storage systems, including but not limited to LVM and/or QCoW2. 
-With this kind of patch file, we are able to realize a block-level image system 
-that is similar to docker’s.</p>
+<p>The patch file has a simple and serializable format, as described in 
+<a href="/2017/06/16/hyperlayer/">the hyperlayer</a> post.</p>
 
       
     </div>

@@ -3,27 +3,25 @@
 <head>
   <meta charset="utf-8">
   
-  <title>towards lightened vm images | Hyper Block</title>
+  <title>the hyperlayer format | Hyper Block</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
-    <meta name="keywords" content="hypervisor, vmm, image, qemu, qcow2, hyperlayer" />
+    <meta name="keywords" content="container, docker, image, block, lvm, hyperlayer" />
   
   
   
   
-  <meta name="description" content="VM Images are too heavy to move around. We propose a layered image system, to enable incremental transferring of images. This system imitates the agile image system of container, but in the level of">
-<meta name="keywords" content="hypervisor, vmm, image, qemu, qcow2, hyperlayer">
+  <meta name="description" content="Hyperlayer is meant to be a generic diff/patch format for all block-level storage  systems, including but not limited to LVM and/or QCoW2. With hyperlayer, we can  realize a novel layered image system">
+<meta name="keywords" content="container, docker, image, block, lvm, hyperlayer">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Towards lightened VM Images">
-<meta property="og:url" content="http://www.hyperblock.org/2017/05/31/lightened/index.html">
+<meta property="og:title" content="The Hyperlayer Format">
+<meta property="og:url" content="http://www.hyperblock.org/2017/06/16/hyperlayer/index.html">
 <meta property="og:site_name" content="Hyper Block">
-<meta property="og:description" content="VM Images are too heavy to move around. We propose a layered image system, to enable incremental transferring of images. This system imitates the agile image system of container, but in the level of">
-<meta property="og:image" content="http://www.hyperblock.org/images/layered-image.png">
-<meta property="og:updated_time" content="2017-06-16T11:50:21.000Z">
+<meta property="og:description" content="Hyperlayer is meant to be a generic diff/patch format for all block-level storage  systems, including but not limited to LVM and/or QCoW2. With hyperlayer, we can  realize a novel layered image system">
+<meta property="og:updated_time" content="2017-06-16T11:45:07.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Towards lightened VM Images">
-<meta name="twitter:description" content="VM Images are too heavy to move around. We propose a layered image system, to enable incremental transferring of images. This system imitates the agile image system of container, but in the level of">
-<meta name="twitter:image" content="http://www.hyperblock.org/images/layered-image.png">
+<meta name="twitter:title" content="The Hyperlayer Format">
+<meta name="twitter:description" content="Hyperlayer is meant to be a generic diff/patch format for all block-level storage  systems, including but not limited to LVM and/or QCoW2. With hyperlayer, we can  realize a novel layered image system">
   
     <link rel="alternate" href="/atom.xml" title="Hyper Block" type="application/atom+xml">
   
@@ -113,7 +111,7 @@ var themeMenus = {};
             
       <div id="content" class="outer">
         
-          <section id="main" style="float:none;"><article id="post-lightened" style="width: 66%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+          <section id="main" style="float:none;"><article id="post-hyperlayer" style="width: 66%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
   <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
     
     
@@ -121,7 +119,7 @@ var themeMenus = {};
         
   
     <h1 class="thumb" class="article-title" itemprop="name">
-      Towards lightened VM Images
+      The Hyperlayer Format
     </h1>
   
 
@@ -129,8 +127,8 @@ var themeMenus = {};
     
     <div class="article-meta">
       
-	Posted on <a href="/2017/05/31/lightened/" class="article-date">
-	  <time datetime="2017-05-30T16:00:00.000Z" itemprop="datePublished">May 31, 2017</time>
+	Posted on <a href="/2017/06/16/hyperlayer/" class="article-date">
+	  <time datetime="2017-06-15T16:00:00.000Z" itemprop="datePublished">June 16, 2017</time>
 	</a> &nbsp; Huiba Li
 
 
@@ -139,56 +137,40 @@ var themeMenus = {};
     </div>
     <div class="article-entry" itemprop="articleBody">
       
-        <p>VM Images are too heavy to move around. We propose a layered image
-system, to enable incremental transferring of images. This system
-imitates the agile image system of container, but in the level of 
-block store, instead of file system. </p>
+        <p>Hyperlayer is meant to be a generic diff/patch format for all block-level storage 
+systems, including but not limited to LVM and/or QCoW2. With hyperlayer, we can 
+realize a novel layered image system for block-level.</p>
 <a id="more"></a>
-<h3 id="Heavy-Images"><a href="#Heavy-Images" class="headerlink" title="Heavy Images"></a>Heavy Images</h3><p>I have been working on cloud for a couple of years, and from time
-to time I see difficulties with large VM images. Last week, a cusomter
-gave us a ticket saying they had a problem when creating a new image.
-After inspection, I found that the creating process was still going
-on, as the image was so big (about 500GB) that the process was not
-able to get completed within a preset time-out period (one hour).</p>
-<p>The root cause of this incident is the heavy weight image. The size of
-a VM image is usually several GBs at least, and can grow to 10s of GBs
-easily, and it’s not uncommon to see 100s of GBs. Such big size is a
-major obstacle to transferring and operating VM images.</p>
-<p>On the other hand, container images are much more light-weight. Each
-time, only needed incremental layers are transferred, which can be as
-small as a few MB. This is the key advantage of docker —- agility.</p>
-<h3 id="Lightening-the-Images"><a href="#Lightening-the-Images" class="headerlink" title="Lightening the Images"></a>Lightening the Images</h3><p>Actually, VM can learn from the image system of docker. Layering is 
-actually a subset of a long-established feature —- snapshot. Each
-snapshot stores the differential data blocks compared with the previous
-one —- roughly the same model with the layering model of 
-container image. The major distinction is block-level vs file-level,
-which is only an implementaion detail.</p>
-<p>The most important missing part of block-level snapshot is a set of tools 
-to export and import layers (snapshots). There was little need for
-this kind of tools, until container appears. We have developed these
-tools for qcow2 images, as well as LVM.</p>
-<p>The figure below shows the model for QCoW2 images: 
-(1) we suppose backing file plays the role of image, which serves all 
-    the dependent layers as read-only; 
-(2) and the “fronting” file plays the role of staging layer as read-write; 
-(3) every layer is essentially a snapshot.</p>
-<p><img src="/images/layered-image.png" alt="Layered Image"></p>
-<p>The two files (“fronting” and backing) in this model can not be 
-integrated into one, otherwise the image layers can not be shared by 
-multiple “fronting” files.</p>
-<p>The patch file has a simple and serializable format, as described in 
-<a href="/2017/06/16/hyperlayer/">the hyperlayer</a> post.</p>
+<p>The format is like:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">HYPERLAYER/1.0</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line"></div><div class="line">D &lt;offset&gt; &lt;length&gt; &lt;hash algorithm&gt; &lt;hash value&gt;</div><div class="line">D &lt;offset&gt; &lt;length&gt; &lt;hash algorithm&gt; &lt;hash value&gt;</div><div class="line">D &lt;offset&gt; &lt;length&gt; &lt;hash algorithm&gt; &lt;hash value&gt;</div><div class="line"></div><div class="line">W &lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">W &lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">W &lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">...</div></pre></td></tr></table></figure>
+<p>In which:</p>
+<ol>
+<li>keys and values are properties of the patch, consisting of letters (lower or 
+upper), digits and underscore, but no leading digits;</li>
+<li>offset and length are hex numbers with NO ‘0x’ prefix, in unit of sector (512 bytes);</li>
+<li>offsets are NOT required to be sorted;</li>
+<li>new lines is a single ‘\n’, without ‘\r’;</li>
+<li>D is short for ‘depends’, indicating the prior layers’ range [offset, offset+length)
+has a hash value of <hash value="">, by hash algorithm <hash algorithm=""></hash></hash></li>
+<li>W is short for ‘write’, indicating the new layer is achieved by writing data on the range.</li>
+</ol>
+<p>For example:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">HYPERLAYER/1.0</div><div class="line">Parent: 68044d4a72dfcf15018cfa6b4baf89361913d93d</div><div class="line">Author: Huiba Li &lt;lihuiba@gmail.com&gt;</div><div class="line">Date: Thu May 4 15:34:37 2017 +0800 </div><div class="line"></div><div class="line">D 10 16 CRC32 df973e29</div><div class="line">D 20 16 CRC32 406457f9</div><div class="line"></div><div class="line">W 0 8</div><div class="line">&lt;data of 4096 bytes&gt;</div><div class="line">W 800 80</div><div class="line">&lt;data of 65536 bytes&gt;</div><div class="line">...</div></pre></td></tr></table></figure>
+<p>With a block-level layered image system, the containers will get hardened with LVM
+based storage driver, and the virtual machines will get lightened storage driver. And
+they will be able to get converged with each other, and co-exist better on a single 
+platform.</p>
 
       
     </div>
     <footer class="entry-meta entry-footer">
       
 	<span class="ico-folder"></span>
-    <a class="article-category-link" href="/categories/English/">English</a>, <a class="article-category-link" href="/categories/English/image/">image</a>
+    <a class="article-category-link" href="/categories/English/">English</a>, <a class="article-category-link" href="/categories/English/hyperlayer/">hyperlayer</a>
 
       
   <span class="ico-tags"></span>
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/VM/">VM</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hyperlayer/">hyperlayer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/image/">image</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hyperlayer/">hyperlayer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/image/">image</a></li></ul>
 
       
         
@@ -236,7 +218,7 @@ $(document).ready(function(){
     <div id="toc" class="toc-article">
     <strong class="toc-title">Contents</strong>
     
-      <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Heavy-Images"><span class="nav-number">1.</span> <span class="nav-text">Heavy Images</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lightening-the-Images"><span class="nav-number">2.</span> <span class="nav-text">Lightening the Images</span></a></li></ol>
+      <ol class="nav">None</ol>
     
     </div>
   </aside>

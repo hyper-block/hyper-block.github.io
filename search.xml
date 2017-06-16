@@ -3,6 +3,53 @@
   
     
     <entry>
+      <title><![CDATA[The Hyperlayer Format]]></title>
+      <url>/2017/06/16/hyperlayer/</url>
+      <content type="html"><![CDATA[<p>Hyperlayer is meant to be a generic diff/patch format for all block-level storage 
+systems, including but not limited to LVM and/or QCoW2. With hyperlayer, we can 
+realize a novel layered image system for block-level.</p>
+<a id="more"></a>
+<p>The format is like:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">HYPERLAYER/1.0</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line"></div><div class="line">D &lt;offset&gt; &lt;length&gt; &lt;hash algorithm&gt; &lt;hash value&gt;</div><div class="line">D &lt;offset&gt; &lt;length&gt; &lt;hash algorithm&gt; &lt;hash value&gt;</div><div class="line">D &lt;offset&gt; &lt;length&gt; &lt;hash algorithm&gt; &lt;hash value&gt;</div><div class="line"></div><div class="line">W &lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">W &lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">W &lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">...</div></pre></td></tr></table></figure>
+<p>In which:</p>
+<ol>
+<li>keys and values are properties of the patch, consisting of letters (lower or 
+upper), digits and underscore, but no leading digits;</li>
+<li>offset and length are hex numbers with NO ‘0x’ prefix, in unit of sector (512 bytes);</li>
+<li>offsets are NOT required to be sorted;</li>
+<li>new lines is a single ‘\n’, without ‘\r’;</li>
+<li>D is short for ‘depends’, indicating the prior layers’ range [offset, offset+length)
+has a hash value of <hash value="">, by hash algorithm <hash algorithm=""></hash></hash></li>
+<li>W is short for ‘write’, indicating the new layer is achieved by writing data on the range.</li>
+</ol>
+<p>For example:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">HYPERLAYER/1.0</div><div class="line">Parent: 68044d4a72dfcf15018cfa6b4baf89361913d93d</div><div class="line">Author: Huiba Li &lt;lihuiba@gmail.com&gt;</div><div class="line">Date: Thu May 4 15:34:37 2017 +0800 </div><div class="line"></div><div class="line">D 10 16 CRC32 df973e29</div><div class="line">D 20 16 CRC32 406457f9</div><div class="line"></div><div class="line">W 0 8</div><div class="line">&lt;data of 4096 bytes&gt;</div><div class="line">W 800 80</div><div class="line">&lt;data of 65536 bytes&gt;</div><div class="line">...</div></pre></td></tr></table></figure>
+<p>With a block-level layered image system, the containers will get hardened with LVM
+based storage driver, and the virtual machines will get lightened storage driver. And
+they will be able to get converged with each other, and co-exist better on a single 
+platform.</p>
+]]></content>
+      
+        <categories>
+            
+            <category> English </category>
+            
+            <category> hyperlayer </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> image </tag>
+            
+            <tag> hyperlayer </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[敏捷VM映像]]></title>
       <url>/2017/06/05/%E6%95%8F%E6%8D%B7VM%E6%98%A0%E5%83%8F/</url>
       <content type="html"><![CDATA[<p>虚拟机映像一般都比较大，因而难以搬移。针对这一问题我们提议一种分层映像系统，
@@ -15,9 +62,9 @@
 <p>这一问题的根源是重量级的映像。虚拟机映像通常至少有几GB大，并且可轻易增长到几十GB，
 几百GB也不罕见。这么大的尺寸是传输和操作映像的主要障碍。</p>
 <p>在另一面，容器映像则轻量得多。每一次只需要传输增量层次，数据量可以低至几MB。这是容器
-的关键优势————敏捷。</p>
+的关键优势——敏捷。</p>
 <h3 id="减轻映像"><a href="#减轻映像" class="headerlink" title="减轻映像"></a>减轻映像</h3><p>事实上，VM映像可以效仿容器。层化其实是快照技术这一历史悠久的功能特性的子集。每次快照
-都存储相对上一次快照的差异数据————基本上跟容器映像的分层模型相同，最主要的区别在于
+都存储相对上一次快照的差异数据——基本上跟容器映像的分层模型相同，最主要的区别在于
 块存储级别vs文件存储级别，而这可以视为一种实现细节。</p>
 <p>块级快照最主要的缺失项是一组导入、导出映像层次（快照）的工具集。业内之前对此几乎没有需求，
 直到容器出现。我们分别针对QCoW2文件以及LVM开发了这些工具。</p>
@@ -104,22 +151,8 @@ tools for qcow2 images, as well as LVM.</p>
 <p>The two files (“fronting” and backing) in this model can not be 
 integrated into one, otherwise the image layers can not be shared by 
 multiple “fronting” files.</p>
-<h3 id="Exported-Format-of-Layers"><a href="#Exported-Format-of-Layers" class="headerlink" title="Exported Format of Layers"></a>Exported Format of Layers</h3><p>The layers are exported as HYPERLAYER format:</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">HYPERLAYER/1.0</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line"></div><div class="line">&lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">&lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">&lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">...</div></pre></td></tr></table></figure>
-<p>In which:</p>
-<ol>
-<li>keys and values are properties of the patch, consisting of letters (lower or 
-upper), digits and underscore, but no leading digits;</li>
-<li>offset and length are hex numbers with NO ‘0x’ prefix, in unit of sector (512 bytes);</li>
-<li>offsets are NOT required to be sorted;</li>
-<li>new lines is a single ‘\n’, without ‘\r’;</li>
-</ol>
-<p>For example:</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">HYPERLAYER/1.0</div><div class="line">Parent: 68044d4a72dfcf15018cfa6b4baf89361913d93d</div><div class="line">Author: Huiba Li &lt;lihuiba@gmail.com&gt;</div><div class="line">Date: Thu May 4 15:34:37 2017 +0800 </div><div class="line"></div><div class="line">0 8</div><div class="line">&lt;data of 4096 bytes&gt;</div><div class="line">800 80</div><div class="line">&lt;data of 65536 bytes&gt;</div><div class="line">...</div></pre></td></tr></table></figure>
-<p>This format is called <em>HyperLayer</em>. It‘s meant to be a generic diff/patch format 
-for all block-level storage systems, including but not limited to LVM and/or QCoW2. 
-With this kind of patch file, we are able to realize a block-level image system 
-that is similar to docker’s.</p>
+<p>The patch file has a simple and serializable format, as described in 
+<a href="/2017/06/16/hyperlayer/">the hyperlayer</a> post.</p>
 ]]></content>
       
         <categories>
@@ -191,22 +224,8 @@ sets; and provides consistent I/O performance in all cases. It is
 based on long-established LVM, and we have created a new tool, called
 <code>lvdiffer</code>, to create a block-level patch file between adjacent LVM thin 
 volumes, as well as applying the patch to existing LVM thin volumes.</p>
-<p>The patch file has a simple and serializable format as this:</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">HYPERLAYER/1.0</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line">&lt;key&gt;: &lt;value&gt;</div><div class="line"></div><div class="line">&lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">&lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">&lt;offset&gt; &lt;length&gt;</div><div class="line">&lt;data of $length*512 bytes&gt;</div><div class="line">...</div></pre></td></tr></table></figure>
-<p>In which:</p>
-<ol>
-<li>keys and values are properties of the patch, consisting of letters (lower or 
-upper), digits and underscore, but no leading digits;</li>
-<li>offset and length are hex numbers with NO ‘0x’ prefix, in unit of sector (512 bytes);</li>
-<li>offsets are NOT required to be sorted;</li>
-<li>new lines is a single ‘\n’, without ‘\r’;</li>
-</ol>
-<p>For example:</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">HYPERLAYER/1.0</div><div class="line">Parent: 68044d4a72dfcf15018cfa6b4baf89361913d93d</div><div class="line">Author: Huiba Li &lt;lihuiba@gmail.com&gt;</div><div class="line">Date: Thu May 4 15:34:37 2017 +0800 </div><div class="line"></div><div class="line">0 8</div><div class="line">&lt;data of 4096 bytes&gt;</div><div class="line">800 80</div><div class="line">&lt;data of 65536 bytes&gt;</div><div class="line">...</div></pre></td></tr></table></figure>
-<p>This format is called <em>HyperLayer</em>. It‘s meant to be a generic diff/patch format 
-for all block-level storage systems, including but not limited to LVM and/or QCoW2. 
-With this kind of patch file, we are able to realize a block-level image system 
-that is similar to docker’s.</p>
+<p>The patch file has a simple and serializable format, as described in 
+<a href="/2017/06/16/hyperlayer/">the hyperlayer</a> post.</p>
 ]]></content>
       
         <categories>

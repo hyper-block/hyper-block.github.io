@@ -19,7 +19,7 @@
 <meta property="og:site_name" content="Hyper Block">
 <meta property="og:description" content="虚拟机映像一般都比较大，因而难以搬移。针对这一问题我们提议一种分层映像系统， 以使能映像的增量传输。这一系统模仿了容器的非常敏捷的映像系统，但处于块存储级别， 而不是文件系统级别。">
 <meta property="og:image" content="http://www.hyperblock.org/images/layered-image.png">
-<meta property="og:updated_time" content="2017-06-05T12:22:19.000Z">
+<meta property="og:updated_time" content="2017-06-06T05:01:28.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="敏捷VM映像">
 <meta name="twitter:description" content="虚拟机映像一般都比较大，因而难以搬移。针对这一问题我们提议一种分层映像系统， 以使能映像的增量传输。这一系统模仿了容器的非常敏捷的映像系统，但处于块存储级别， 而不是文件系统级别。">
@@ -131,7 +131,7 @@ var themeMenus = {};
       
 	Posted on <a href="/2017/06/05/敏捷VM映像/" class="article-date">
 	  <time datetime="2017-06-04T16:00:00.000Z" itemprop="datePublished">June 5, 2017</time>
-	</a> &nbsp; Huiba Li
+	</a> &nbsp; 李慧霸
 
 
 
@@ -149,9 +149,9 @@ var themeMenus = {};
 <p>这一问题的根源是重量级的映像。虚拟机映像通常至少有几GB大，并且可轻易增长到几十GB，
 几百GB也不罕见。这么大的尺寸是传输和操作映像的主要障碍。</p>
 <p>在另一面，容器映像则轻量得多。每一次只需要传输增量层次，数据量可以低至几MB。这是容器
-的关键优势————敏捷。</p>
+的关键优势——敏捷。</p>
 <h3 id="减轻映像"><a href="#减轻映像" class="headerlink" title="减轻映像"></a>减轻映像</h3><p>事实上，VM映像可以效仿容器。层化其实是快照技术这一历史悠久的功能特性的子集。每次快照
-都存储相对上一次快照的差异数据————基本上跟容器映像的分层模型相同，最主要的区别在于
+都存储相对上一次快照的差异数据——基本上跟容器映像的分层模型相同，最主要的区别在于
 块存储级别vs文件存储级别，而这可以视为一种实现细节。</p>
 <p>块级快照最主要的缺失项是一组导入、导出映像层次（快照）的工具集。业内之前对此几乎没有需求，
 直到容器出现。我们分别针对QCoW2文件以及LVM开发了这些工具。</p>
