@@ -21,6 +21,7 @@ upper), digits and underscore, but no leading digits;</li>
 <li>D is short for ‘depends’, indicating the prior layers’ range [offset, offset+length)
 has a hash value of <hash value="">, by hash algorithm <hash algorithm=""></hash></hash></li>
 <li>W is short for ‘write’, indicating the new layer is achieved by writing data on the range.</li>
+<li>Hash algorithms <em>must</em> include CRC32, others are optional, like SHA1, MD5, etc.</li>
 </ol>
 <p>For example:</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">HYPERLAYER/1.0</div><div class="line">Parent: 68044d4a72dfcf15018cfa6b4baf89361913d93d</div><div class="line">Author: Huiba Li &lt;lihuiba@gmail.com&gt;</div><div class="line">Date: Thu May 4 15:34:37 2017 +0800 </div><div class="line"></div><div class="line">D 10 16 CRC32 df973e29</div><div class="line">D 20 16 CRC32 406457f9</div><div class="line"></div><div class="line">W 0 8</div><div class="line">&lt;data of 4096 bytes&gt;</div><div class="line">W 800 80</div><div class="line">&lt;data of 65536 bytes&gt;</div><div class="line">...</div></pre></td></tr></table></figure>
