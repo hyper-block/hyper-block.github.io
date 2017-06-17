@@ -57,53 +57,7 @@ The two files ("fronting" and backing) in this model can not be
 integrated into one, otherwise the image layers can not be shared by 
 multiple "fronting" files.
 
-### Exported Format of Layers
-
-The layers are exported as HYPERLAYER format:
-
-```
-HYPERLAYER/1.0
-<key>: <value>
-<key>: <value>
-<key>: <value>
-<key>: <value>
-
-<offset> <length>
-<data of $length*512 bytes>
-<offset> <length>
-<data of $length*512 bytes>
-<offset> <length>
-<data of $length*512 bytes>
-...
-
-```
-In which:
-
-1. keys and values are properties of the patch, consisting of letters (lower or 
-upper), digits and underscore, but no leading digits;
-2. offset and length are hex numbers with NO '0x' prefix, in unit of sector (512 bytes);
-3. offsets are NOT required to be sorted;
-4. new lines is a single '\n', without '\r';
-
-For example:
-
-```
-HYPERLAYER/1.0
-Parent: 68044d4a72dfcf15018cfa6b4baf89361913d93d
-Author: Huiba Li <lihuiba@gmail.com>
-Date: Thu May 4 15:34:37 2017 +0800 
-
-0 8
-<data of 4096 bytes>
-800 80
-<data of 65536 bytes>
-...
-```
-
-This format is called *HyperLayer*. It‘s meant to be a generic diff/patch format 
-for all block-level storage systems, including but not limited to LVM and/or QCoW2. 
-With this kind of patch file, we are able to realize a block-level image system 
-that is similar to docker's.
-
+The patch file has a simple and serializable format, as described in 
+[the hyperlayer](/2017/06/16/hyperlayer/) post.
 
 
