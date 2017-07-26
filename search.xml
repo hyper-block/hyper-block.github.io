@@ -3,6 +3,108 @@
   
     
     <entry>
+      <title><![CDATA[Dumping LVM Thin Volumes]]></title>
+      <url>/2017/07/26/lvdiff/</url>
+      <content type="html"><![CDATA[<h1 id="lvdiff-Project"><a href="#lvdiff-Project" class="headerlink" title="lvdiff Project"></a>lvdiff Project</h1><p>A pair of tools ( <strong>lvdiff/lvpatch</strong> ) to backup and restore LVM2 thinly-provisioned volumes.</p>
+<a id="more"></a>
+<h2 id="Usage-NEED-RUN-AS-ROOT"><a href="#Usage-NEED-RUN-AS-ROOT" class="headerlink" title="Usage (NEED RUN AS ROOT)"></a>Usage (<strong>NEED RUN AS ROOT</strong>)</h2><h3 id="lvdiff"><a href="#lvdiff" class="headerlink" title="lvdiff"></a>lvdiff</h3><p>lvdiff is a tool to dump the differential blocks of two <strong>LVM2 thinly-provisioned volumes</strong>.</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">Usage:</div><div class="line">  lvdiff &lt;volume_A&gt; &lt;volume_B&gt; [flags]</div><div class="line"></div><div class="line">Flags:</div><div class="line">  -d, -- int32             checksum detect level. range: 0-3 </div><div class="line">							 0 means no checksum, </div><div class="line">							 1 means only check head block, </div><div class="line">							 2 means random check, </div><div class="line">							 3 means scan all data blocks. (default 2)</div><div class="line">  -h, --help       help for lvdiff</div><div class="line">      --meta       set metadata (format as &apos;$key:$value&apos;).</div><div class="line"> 	           To set one more meta, use --meta aa:aa --meta bb:bb</div><div class="line"></div><div class="line">  -p, --pool       thin volume pool.</div></pre></td></tr></table></figure>
+<h3 id="lvpatch"><a href="#lvpatch" class="headerlink" title="lvpatch"></a>lvpatch</h3><p>lvpatch is a tool to patch volume’s diff file (a set of volume’s change blocks) to another thin-volume.  </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">Usage:</div><div class="line">  lvpatch &lt;new_volume_name&gt; [flags]</div><div class="line"></div><div class="line">Flags:</div><div class="line">  -h, --help                help for lvpatch</div><div class="line">  -l, --lvbase string       base logical volume</div><div class="line">  -g, --lvgroup string      volume group</div><div class="line">      --no-base-check       patch volume into base without calculate checksum.</div></pre></td></tr></table></figure>
+<p>Please note that the chunk size of thin pool for restoring must be equal to that in the backup files.</p>
+<h1 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h1><h2 id="lvdiff-1"><a href="#lvdiff-1" class="headerlink" title="lvdiff"></a>lvdiff</h2><p>In this section, we  will use <strong>lvdiff</strong> to create an diff-block file of thin volume.</p>
+<p>Assuming there is a thin-volume pool <strong>‘pool0’</strong> in volume group <strong>‘vg0’</strong></p>
+<ol>
+<li><p>Create an snapshot <strong>sp0</strong> of <strong>vol0</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">$ lvcreate -s -n sp0 /dev/vol0</div></pre></td></tr></table></figure>
+</li>
+<li><p>Write some data into <strong>vol0</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">$ mount /dev/vg0/vol0 /mnt/vg0/vol0</div><div class="line">$ echo &quot;hello world&quot; &gt; /mnt/vg0/vol0/hello</div><div class="line">$ ..... //write some files to /dev/vg0/vol0</div></pre></td></tr></table></figure>
+</li>
+<li><p>dump diff file:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">$ lvdiff -g vg0 --meta &apos;Author:BigVan (alpc_metic@live.com)&apos; --meta &apos;Message: hello world&apos; sp0 vol0 &gt; test.diff</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>lvdiff will dump the different blocks between <strong>vol0</strong> and <strong>sp0</strong> and saved as <strong>test.diff</strong>. And SHA1 code will be shown in Stderr.</p>
+<h2 id="lvpatch-1"><a href="#lvpatch-1" class="headerlink" title="lvpatch"></a>lvpatch</h2><p>In this  section, we will patch <strong>test.diff</strong> to a base volume <strong>‘vg1/sp0’</strong> which is identical with <strong>vg0/sp0</strong> . </p>
+<ol>
+<li>Patch <strong>test.diff</strong> to <strong>vg1/sp0</strong>
+<code>$ cat test.diff | sudo ./lvpatch -g vg1 -l sp0 vol0_new</code> 
+It will restore thin volume <strong>/dev/vg1/vol0_new</strong></li>
+</ol>
+<h2 id="NOTE"><a href="#NOTE" class="headerlink" title="NOTE"></a>NOTE</h2><p>Use command <strong>lvs</strong> to check current volumes in your computer. If an volume is inactive, use command <strong>lvchange -ay -K [volume path]</strong> to active it before mount.</p>
+]]></content>
+      
+        <categories>
+            
+            <category> English </category>
+            
+            <category> hyperlayer </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> image </tag>
+            
+            <tag> hyperlayer </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[导出LVM的简配逻辑卷]]></title>
+      <url>/2017/07/26/lvdiff.cn/</url>
+      <content type="html"><![CDATA[<h1 id="lvdiff"><a href="#lvdiff" class="headerlink" title="lvdiff"></a>lvdiff</h1><p><strong>lvdiff/lvpatch</strong> 是一组用于对LVM自动精简配置(Thin Provisioning)的逻辑卷进行差异比较和补丁的工具。使用 <strong>lvdiff</strong> 可以将两个逻辑卷的差异数据块形成二进制文件导出,再通过 <strong>lvpatch</strong> 可将差异文件拼凑至另外的逻辑卷之上，实现逻辑卷的迁移。</p>
+<a id="more"></a>
+<h2 id="Usage-NEED-RUN-AS-ROOT"><a href="#Usage-NEED-RUN-AS-ROOT" class="headerlink" title="Usage (NEED RUN AS ROOT)"></a>Usage (<strong>NEED RUN AS ROOT</strong>)</h2><h3 id="lvdiff-1"><a href="#lvdiff-1" class="headerlink" title="lvdiff"></a>lvdiff</h3><p><strong>lvdiff</strong> 用于将指定的两个逻辑卷A和B之间的差异数据块导出成二进制文件。
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">Usage:</div><div class="line">  lvdiff &lt;volume_A&gt; &lt;volume_B&gt; [flags]</div><div class="line"></div><div class="line">Flags:</div><div class="line">  -d, -- int32             checksum detect level. range: 0-3 </div><div class="line">							 0 means no checksum, </div><div class="line">							 1 means only check head block, </div><div class="line">							 2 means random check, </div><div class="line">							 3 means scan all data blocks. (default 2)</div><div class="line">  -h, --help       help for lvdiff</div><div class="line">      --meta       set metadata (format as &apos;$key:$value&apos;).</div><div class="line"> 	           To set one more meta, use --meta aa:aa --meta bb:bb</div><div class="line"></div><div class="line">  -p, --pool       thin volume pool.</div></pre></td></tr></table></figure></p>
+<h3 id="lvpatch"><a href="#lvpatch" class="headerlink" title="lvpatch"></a>lvpatch</h3><p><strong>lvpatch</strong> 用于将lvdiff导出的结果拼凑到另一个 <strong>逻辑卷base</strong> 之上并形成新卷。当 <strong>逻辑卷base</strong> 与 <strong>原逻辑卷B</strong> 的数据一致时，可实现逻辑卷A的异地恢复。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">Usage:</div><div class="line">  lvpatch &lt;new_volume_name&gt; [flags]</div><div class="line"></div><div class="line">Flags:</div><div class="line">  -h, --help                help for lvpatch</div><div class="line">  -l, --lvbase string       base logical volume</div><div class="line">  -g, --lvgroup string      volume group</div><div class="line">      --no-base-check       patch volume into base without calculate checksum.</div></pre></td></tr></table></figure>
+<p>请注意，不同逻辑卷所在的精简池的chunk size需要相同才能进行正常恢复。</p>
+<h1 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h1><h2 id="lvdiff-2"><a href="#lvdiff-2" class="headerlink" title="lvdiff"></a>lvdiff</h2><p>这一部分为使用 <strong>lvdiff</strong> 的示例。
+假设在逻辑卷组 <strong>‘vg0’</strong> 中有精简配置池 <strong>‘pool0’</strong></p>
+<ol>
+<li><p>建立 vol0 的快照 sp0</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">$ lvcreate -s -n sp0 /dev/vol0</div></pre></td></tr></table></figure>
+</li>
+<li><p>向 vol0 中写入数据 </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">$ mount /dev/vg0/vol0 /mnt/vg0/vol0</div><div class="line">$ echo &quot;hello world&quot; &gt; /mnt/vg0/vol0/hello</div><div class="line">$ ..... //write some files to /dev/vg0/vol0</div></pre></td></tr></table></figure>
+</li>
+<li><p>导出 vol0 与 sp0 之间的差异数据块，同时添加一些导出信息:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">$ lvdiff -g vg0 --meta &apos;Author:BigVan (alpc_metic@live.com)&apos; --meta &apos;Message: hello world&apos; sp0 vol0 &gt; test.diff</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>vol0 和 sp0 之间的差异数据将被保存为 test.diff . 同时，该文件的 SHA1 结果将被输出至 Stderr.</p>
+<h2 id="lvpatch-1"><a href="#lvpatch-1" class="headerlink" title="lvpatch"></a>lvpatch</h2><p>这一部分将把 test.diff 拼接到与上一节中 <strong>vg0/sp0</strong> 一致的另一逻辑卷 <strong>‘vg1/sp0’</strong> 上，实现 vg0/vol0 的异地恢复。
+3. 将 test.diff 拼凑到 sp0 之上
+<code>$ cat test.diff | sudo ./lvpatch -g vg1 -l sp0 vol0_new</code> 
+ 新卷的名字为 <strong>vg1/vol0_new</strong>.</p>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>使用命令 <strong>lvs</strong> 用于列出当前机器上存在的逻辑卷. 如果某一逻辑卷在挂在前未激活, 需要通过 <strong>lvchange -ay -K [volume path]</strong> 命令去激活该卷。</p>
+]]></content>
+      
+        <categories>
+            
+            <category> 中文 </category>
+            
+            <category> image </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> image </tag>
+            
+            <tag> hyperlayer </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[The Hyperlayer Format]]></title>
       <url>/2017/06/16/hyperlayer/</url>
       <content type="html"><![CDATA[<p>Hyperlayer is meant to be a generic diff/patch format for all block-level storage 
